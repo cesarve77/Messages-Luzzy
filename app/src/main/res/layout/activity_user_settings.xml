@@ -329,6 +329,94 @@
                     android:layout_height="wrap_content" />
             </LinearLayout>
 
+            <!-- ===== PERFIL PROFESIONAL (Premium) ===== -->
+            <TextView
+                android:id="@+id/perfil_profesional_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/perfil_profesional"
+                android:textSize="@dimen/big_text_size"
+                android:textStyle="bold"
+                android:layout_marginBottom="@dimen/medium_margin" />
+
+            <!-- Servicios -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/mis_servicios"
+                android:textSize="@dimen/normal_text_size"
+                android:layout_marginBottom="@dimen/small_margin" />
+
+            <LinearLayout
+                android:id="@+id/servicios_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/agregar_servicio_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/agregar_servicio"
+                android:layout_marginTop="@dimen/small_margin"
+                android:layout_marginBottom="@dimen/medium_margin"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                app:cornerRadius="8dp" />
+
+            <!-- Lugar de trabajo -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/lugar_trabajo_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/lugar_trabajo_hint"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                android:layout_marginBottom="@dimen/medium_margin">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/lugar_trabajo_input"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textMultiLine"
+                    android:maxLines="3"
+                    android:gravity="top|start" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Información general -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/info_general_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/info_general"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                android:layout_marginBottom="@dimen/medium_margin">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/info_general_input"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textMultiLine"
+                    android:maxLines="5"
+                    android:gravity="top|start" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- ADN de la IA -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/adn_ia_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/adn_ia_hint"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                android:layout_marginBottom="@dimen/big_margin">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/adn_ia_input"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textMultiLine"
+                    android:maxLines="8"
+                    android:gravity="top|start" />
+            </com.google.android.material.textfield.TextInputLayout>
+
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/save_button"
                 android:layout_width="match_parent"

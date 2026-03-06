@@ -2,6 +2,7 @@ package app.luzzy.fcm
 
 import android.util.Log
 import app.luzzy.extensions.getThreadId
+import app.luzzy.extensions.isDefaultSmsApp
 import app.luzzy.helpers.ContactSendModeRepository
 import app.luzzy.helpers.DraftManager
 import app.luzzy.helpers.SmsSender
@@ -28,6 +29,18 @@ class FCMService : FirebaseMessagingService() {
     override fun onMessageReceived(message: RemoteMessage) {
         super.onMessageReceived(message)
 
+        if (!isDefaultSmsApp()) {
+            Log.d(TAG, "App no es la predeterminada, ignorando mensaje FCM")
+            return
+        }
+
+        // Verificar duplicado por messageId de Firebase
+        val messageId = message.messageId
+        if (messageId != null && isDuplicateMessage(messageId)) {
+            Log.w(TAG, "🚫 Mensaje FCM duplicado bloqueado (ID: $messageId)")
+            return
+        }
+
         Log.d(TAG, "Mensaje recibido de: ${message.from}")
 
         if (message.data.isNotEmpty()) {
@@ -42,6 +55,21 @@ class FCMService : FirebaseMessagingService() {
         }
     }
 
+    private fun isDuplicateMessage(messageId: String): Boolean {
+        val currentTime = System.currentTimeMillis()
+        return synchronized(processedMessages) {
+            val lastTime = processedMessages[messageId]
+            if (lastTime != null && (currentTime - lastTime) < DUPLICATE_WINDOW_MS) {
+                true
+            } else {
+                processedMessages[messageId] = currentTime
+                // Limpiar entradas antiguas
+                processedMessages.entries.removeIf { (currentTime - it.value) > DUPLICATE_WINDOW_MS }
+                false
+            }
+        }
+    }
+
     private fun handleDataMessage(data: Map<String, String>) {
         val recipient = data["to"]
         val message = data["message"]
@@ -51,33 +79,10 @@ class FCMService : FirebaseMessagingService() {
             return
         }
 
-        val messageHash = "$recipient:$message"
-        val currentTime = System.currentTimeMillis()
-
-        val shouldProcess = synchronized(processedMessages) {
-            val lastProcessedTime = processedMessages[messageHash]
-
-            if (lastProcessedTime != null && (currentTime - lastProcessedTime) < DUPLICATE_WINDOW_MS) {
-                val timeDiff = currentTime - lastProcessedTime
-                Log.w(TAG, "🚫 DUPLICADO bloqueado (${timeDiff}ms desde último) - Destinatario: $recipient")
-                false
-            } else {
-                processedMessages[messageHash] = currentTime
-                Log.d(TAG, "✅ Mensaje marcado como procesado - Hash: ${messageHash.hashCode()}")
-
-                processedMessages.entries.removeIf { (currentTime - it.value) > DUPLICATE_WINDOW_MS }
-
-                if (processedMessages.size > MAX_CACHE_SIZE) {
-                    val sortedEntries = processedMessages.entries.sortedBy { it.value }
-                    sortedEntries.take(processedMessages.size - MAX_CACHE_SIZE / 2).forEach {
-                        processedMessages.remove(it.key)
-                    }
-                }
-                true
-            }
-        }
-
-        if (!shouldProcess) {
+        // Segunda verificación por contenido (por si llega el mismo mensaje con diferente ID)
+        val contentHash = "content:$recipient:$message"
+        if (isDuplicateMessage(contentHash)) {
+            Log.w(TAG, "🚫 DUPLICADO por contenido bloqueado - Destinatario: $recipient")
             return
         }
 

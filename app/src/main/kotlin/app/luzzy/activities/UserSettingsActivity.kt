@@ -4,11 +4,15 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.ImageButton
+import android.widget.LinearLayout
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.lifecycleScope
 import com.goodwy.commons.extensions.toast
 import com.goodwy.commons.extensions.viewBinding
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import app.luzzy.R
 import app.luzzy.auth.GoogleAuthRepository
 import app.luzzy.billing.PremiumRepository
@@ -68,7 +72,71 @@ class UserSettingsActivity : SimpleActivity() {
             showLogoutConfirmationDialog()
         }
 
+        binding.agregarServicioBtn.setOnClickListener {
+            addServiceRow()
+        }
+
         updatePremiumStatus(isPremium)
+    }
+
+    private fun addServiceRow(servicio: String = "", precio: String = "") {
+        val dp8 = (8 * resources.displayMetrics.density).toInt()
+        val row = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).also { it.bottomMargin = dp8 }
+        }
+
+        val servicioLayout = TextInputLayout(this, null, com.google.android.material.R.attr.textInputOutlinedStyle).apply {
+            hint = getString(R.string.servicio_hint)
+            layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1.5f)
+        }
+        val servicioInput = TextInputEditText(servicioLayout.context).apply {
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            )
+            maxLines = 1
+            setText(servicio)
+        }
+        servicioLayout.addView(servicioInput)
+
+        val precioLayout = TextInputLayout(this, null, com.google.android.material.R.attr.textInputOutlinedStyle).apply {
+            hint = getString(R.string.precio_hint)
+            layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f).also {
+                it.marginStart = dp8
+            }
+        }
+        val precioInput = TextInputEditText(precioLayout.context).apply {
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            )
+            maxLines = 1
+            setText(precio)
+        }
+        precioLayout.addView(precioInput)
+
+        val deleteBtn = ImageButton(this).apply {
+            setImageResource(android.R.drawable.ic_menu_close_clear_cancel)
+            background = null
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).also {
+                it.gravity = android.view.Gravity.CENTER_VERTICAL
+                it.marginStart = dp8
+            }
+            contentDescription = "Eliminar servicio"
+            setOnClickListener { binding.serviciosContainer.removeView(row) }
+        }
+
+        row.addView(servicioLayout)
+        row.addView(precioLayout)
+        row.addView(deleteBtn)
+        binding.serviciosContainer.addView(row)
     }
 
     private fun showLogoutConfirmationDialog() {
@@ -149,6 +217,22 @@ class UserSettingsActivity : SimpleActivity() {
         binding.notificacionesSilenciosasSwitch.isChecked = settings["notificaciones_silenciosas"] as? Boolean ?: false
         binding.modoOscuroSwitch.isChecked = settings["modo_oscuro"] as? Boolean ?: false
         binding.autoRespuestaSwitch.isChecked = settings["auto_respuesta_activada"] as? Boolean ?: false
+
+        // Perfil profesional
+        binding.serviciosContainer.removeAllViews()
+        val serviciosList = settings["servicios"] as? List<*>
+        serviciosList?.forEach { item ->
+            val map = item as? Map<*, *>
+            addServiceRow(
+                servicio = map?.get("servicio")?.toString() ?: "",
+                precio = map?.get("precio")?.toString() ?: ""
+            )
+        }
+        if (binding.serviciosContainer.childCount == 0) addServiceRow()
+
+        binding.lugarTrabajoInput.setText(settings["lugar_trabajo"]?.toString() ?: "")
+        binding.infoGeneralInput.setText(settings["info_general"]?.toString() ?: "")
+        binding.adnIaInput.setText(settings["adn"]?.toString() ?: "")
     }
 
     private fun updatePremiumStatus(premium: Boolean) {
@@ -165,11 +249,21 @@ class UserSettingsActivity : SimpleActivity() {
         binding.mensajeAutomaticoInput.isEnabled = enabled
         binding.firmaSmsInput.isEnabled = enabled
         binding.autoRespuestaSwitch.isEnabled = enabled
+        binding.lugarTrabajoInput.isEnabled = enabled
+        binding.infoGeneralInput.isEnabled = enabled
+        binding.adnIaInput.isEnabled = enabled
+        binding.agregarServicioBtn.isEnabled = enabled
 
         val alpha = if (enabled) 1.0f else 0.5f
         binding.mensajeAutomaticoLayout.alpha = alpha
         binding.firmaSmsLayout.alpha = alpha
         binding.autoRespuestaSwitch.alpha = alpha
+        binding.perfilProfesionalTitle.alpha = alpha
+        binding.lugarTrabajoLayout.alpha = alpha
+        binding.infoGeneralLayout.alpha = alpha
+        binding.adnIaLayout.alpha = alpha
+        binding.agregarServicioBtn.alpha = alpha
+        binding.serviciosContainer.alpha = alpha
     }
 
     private fun saveConfiguration() {
@@ -199,6 +293,29 @@ class UserSettingsActivity : SimpleActivity() {
             }
 
             settings["auto_respuesta_activada"] = binding.autoRespuestaSwitch.isChecked
+
+            // Perfil profesional
+            val servicios = mutableListOf<Map<String, String>>()
+            for (i in 0 until binding.serviciosContainer.childCount) {
+                val row = binding.serviciosContainer.getChildAt(i) as? LinearLayout ?: continue
+                val servicioLayout = row.getChildAt(0) as? TextInputLayout
+                val precioLayout = row.getChildAt(1) as? TextInputLayout
+                val nombre = (servicioLayout?.editText as? TextInputEditText)?.text?.toString()?.trim() ?: ""
+                val precio = (precioLayout?.editText as? TextInputEditText)?.text?.toString()?.trim() ?: ""
+                if (nombre.isNotEmpty()) {
+                    servicios.add(mapOf("servicio" to nombre, "precio" to precio))
+                }
+            }
+            settings["servicios"] = servicios
+
+            val lugarTrabajo = binding.lugarTrabajoInput.text.toString().trim()
+            if (lugarTrabajo.isNotBlank()) settings["lugar_trabajo"] = lugarTrabajo
+
+            val infoGeneral = binding.infoGeneralInput.text.toString().trim()
+            if (infoGeneral.isNotBlank()) settings["info_general"] = infoGeneral
+
+            val adn = binding.adnIaInput.text.toString().trim()
+            if (adn.isNotBlank()) settings["adn"] = adn
         }
 
         settings["notificaciones_silenciosas"] = binding.notificacionesSilenciosasSwitch.isChecked

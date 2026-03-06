@@ -1,6 +1,7 @@
 package app.luzzy.activities
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.app.role.RoleManager
 import android.content.Intent
 import android.content.pm.ShortcutInfo
@@ -268,8 +269,10 @@ class MainActivity : SimpleActivity() {
                 if (roleManager.isRoleHeld(RoleManager.ROLE_SMS)) {
                     askPermissions()
                 } else {
-                    val intent = roleManager.createRequestRoleIntent(RoleManager.ROLE_SMS)
-                    startActivityForResult(intent, MAKE_DEFAULT_APP_REQUEST)
+                    showDefaultSmsRationale {
+                        val intent = roleManager.createRequestRoleIntent(RoleManager.ROLE_SMS)
+                        startActivityForResult(intent, MAKE_DEFAULT_APP_REQUEST)
+                    }
                 }
             } else {
                 toast(com.goodwy.commons.R.string.unknown_error_occurred)
@@ -279,14 +282,41 @@ class MainActivity : SimpleActivity() {
             if (Telephony.Sms.getDefaultSmsPackage(this) == packageName) {
                 askPermissions()
             } else {
-                val intent = Intent(Telephony.Sms.Intents.ACTION_CHANGE_DEFAULT)
-                intent.putExtra(Telephony.Sms.Intents.EXTRA_PACKAGE_NAME, packageName)
-                startActivityForResult(intent, MAKE_DEFAULT_APP_REQUEST)
+                showDefaultSmsRationale {
+                    val intent = Intent(Telephony.Sms.Intents.ACTION_CHANGE_DEFAULT)
+                    intent.putExtra(Telephony.Sms.Intents.EXTRA_PACKAGE_NAME, packageName)
+                    startActivityForResult(intent, MAKE_DEFAULT_APP_REQUEST)
+                }
             }
         }
     }
 
+    private fun showDefaultSmsRationale(onContinue: () -> Unit) {
+        AlertDialog.Builder(this)
+            .setTitle(R.string.default_sms_rationale_title)
+            .setMessage(R.string.default_sms_rationale_message)
+            .setPositiveButton(R.string.continue_btn) { _, _ -> onContinue() }
+            .setNegativeButton(R.string.exit_app) { _, _ -> finish() }
+            .setCancelable(false)
+            .show()
+    }
+
     private fun askPermissions() {
+        val prefs = getSharedPreferences("luzzy_prefs", MODE_PRIVATE)
+        if (!prefs.getBoolean("perm_rationale_shown", false)) {
+            prefs.edit().putBoolean("perm_rationale_shown", true).apply()
+            AlertDialog.Builder(this)
+                .setTitle(R.string.sms_permission_rationale_title)
+                .setMessage(R.string.sms_permission_rationale_message)
+                .setPositiveButton(R.string.continue_btn) { _, _ -> requestSmsPermissions() }
+                .setCancelable(false)
+                .show()
+        } else {
+            requestSmsPermissions()
+        }
+    }
+
+    private fun requestSmsPermissions() {
         handlePermission(PERMISSION_READ_SMS) {
             if (it) {
                 handlePermission(PERMISSION_SEND_SMS) {

@@ -17,6 +17,7 @@ import com.goodwy.commons.helpers.ensureBackgroundThread
 import com.goodwy.commons.models.PhoneNumber
 import com.goodwy.commons.models.SimpleContact
 import app.luzzy.extensions.config
+import app.luzzy.extensions.isDefaultSmsApp
 import app.luzzy.extensions.getConversations
 import app.luzzy.extensions.getNameFromAddress
 import app.luzzy.extensions.getNotificationBitmap
@@ -41,6 +42,10 @@ class SmsReceiver : BroadcastReceiver() {
 
     @SuppressLint("UnsafeProtectedBroadcastReceiver")
     override fun onReceive(context: Context, intent: Intent) {
+        if (!context.isDefaultSmsApp()) {
+            Log.d(TAG, "✗ App no es la predeterminada, ignorando SMS")
+            return
+        }
         Log.d(TAG, "✓ SMS recibido, procesando...")
         val messages = Telephony.Sms.Intents.getMessagesFromIntent(intent)
         var address = ""

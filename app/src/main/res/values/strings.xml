@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_launcher_name">Messages</string>
+    <string name="app_launcher_name">Luzzy</string>
     <string name="type_a_message">Type a message…</string>
     <string name="message_not_sent_short">Message not sent</string>
     <string name="message_not_sent_touch_retry">Not sent. Touch to retry.</string>
@@ -203,6 +203,18 @@
 
     <string name="auto_respuesta_activada">Auto-Respuesta</string>
     <string name="auto_respuesta_desc">Responder automáticamente a mensajes entrantes</string>
+
+    <string name="perfil_profesional">Perfil Profesional</string>
+    <string name="mis_servicios">Mis servicios</string>
+    <string name="servicio_hint">Nombre del servicio</string>
+    <string name="precio_hint">Precio (o "A consultar")</string>
+    <string name="agregar_servicio">+ Agregar servicio</string>
+    <string name="lugar_trabajo">Lugar de trabajo</string>
+    <string name="lugar_trabajo_hint">Ej: A domicilio, hoteles, local propio…</string>
+    <string name="info_general">Información general</string>
+    <string name="adn_ia">ADN de la IA</string>
+    <string name="adn_ia_hint">Describe cómo debe responder la IA tus mensajes…</string>
+
     <string name="notificaciones_silenciosas">Notificaciones Silenciosas</string>
     <string name="notificaciones_silenciosas_desc">Desactivar sonidos de notificación</string>
     <string name="modo_oscuro">Modo Oscuro</string>
@@ -258,4 +270,12 @@
     <string name="draft_mode">Draft mode</string>
     <string name="draft_mode_description">Auto responses will be saved as draft and you will receive a notification to send them manually</string>
     <string name="send_mode_description">Auto responses will be sent directly without confirmation</string>
+
+    <!-- Permission Rationale Dialogs (Google Play compliance) -->
+    <string name="sms_permission_rationale_title">Luzzy necesita acceso</string>
+    <string name="sms_permission_rationale_message">Para funcionar como tu app de mensajería, Luzzy necesita:\n\n• Leer y enviar SMS — para gestionar tus mensajes de texto\n• Leer contactos — para mostrar los nombres en tus conversaciones\n\nEstos permisos se usan únicamente para la mensajería SMS y nunca se comparten con terceros.</string>
+    <string name="default_sms_rationale_title">App SMS predeterminada</string>
+    <string name="default_sms_rationale_message">Para enviar y recibir mensajes SMS, Luzzy necesita ser tu app de mensajería predeterminada.\n\nEsto le permite a Luzzy:\n• Recibir SMS entrantes\n• Enviar mensajes en tu nombre\n• Mostrarte notificaciones de nuevos mensajes\n\nPuedes cambiarlo en cualquier momento desde los ajustes del dispositivo.</string>
+    <string name="continue_btn">Continuar</string>
+    <string name="exit_app">Salir</string>
 </resources>

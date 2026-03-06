@@ -101,27 +101,7 @@ fun Activity.launchViewIntent(uri: Uri, mimetype: String, filename: String) {
 }
 
 fun Activity.startContactDetailsIntentRecommendation(contact: SimpleContact) {
-    val simpleContacts = "com.goodwy.contacts"
-    val simpleContactsDebug = "com.goodwy.contacts.debug"
-    val newSimpleContacts = "dev.goodwy.contacts"
-    val newSimpleContactsDebug = "dev.goodwy.contacts.debug"
-    if (
-        (0..config.appRecommendationDialogCount).random() == 2 &&
-        (!isPackageInstalled(simpleContacts) && !isPackageInstalled(simpleContactsDebug) &&
-            !isPackageInstalled(newSimpleContacts) && !isPackageInstalled(newSimpleContactsDebug))
-    ) {
-        NewAppDialog(
-            activity = this,
-            packageName = if (packageName.startsWith("dev.")) newSimpleContacts else simpleContacts,
-            title = getString(com.goodwy.strings.R.string.recommendation_dialog_contacts_g),
-            text = getString(com.goodwy.commons.R.string.right_contacts),
-            drawable = AppCompatResources.getDrawable(this, com.goodwy.commons.R.drawable.ic_contacts)
-        ) {
-            startContactDetailsIntent(contact)
-        }
-    } else {
-        startContactDetailsIntent(contact)
-    }
+    startContactDetailsIntent(contact)
 }
 
 fun Activity.startContactDetailsIntent(contact: SimpleContact) {
