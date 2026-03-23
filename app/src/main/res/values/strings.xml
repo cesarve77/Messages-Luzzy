@@ -271,6 +271,12 @@
     <string name="draft_mode_description">Auto responses will be saved as draft and you will receive a notification to send them manually</string>
     <string name="send_mode_description">Auto responses will be sent directly without confirmation</string>
 
+    <!-- Prominent Disclosure (Google Play User Data policy) -->
+    <string name="prominent_disclosure_title">Aviso de privacidad</string>
+    <string name="prominent_disclosure_message">Luzzy recopila y transmite tu número de teléfono y los contactos de tu dispositivo para habilitar el envío y recepción de mensajes SMS entre usuarios. Esta información es enviada a nuestros servidores únicamente con este propósito y no se comparte con terceros.</string>
+    <string name="prominent_disclosure_accept">Acepto</string>
+    <string name="prominent_disclosure_decline">No acepto</string>
+
     <!-- Permission Rationale Dialogs (Google Play compliance) -->
     <string name="sms_permission_rationale_title">Luzzy necesita acceso</string>
     <string name="sms_permission_rationale_message">Para funcionar como tu app de mensajería, Luzzy necesita:\n\n• Leer y enviar SMS — para gestionar tus mensajes de texto\n• Leer contactos — para mostrar los nombres en tus conversaciones\n\nEstos permisos se usan únicamente para la mensajería SMS y nunca se comparten con terceros.</string>

@@ -263,6 +263,24 @@ class MainActivity : SimpleActivity() {
     }
 
     private fun loadMessages() {
+        val prefs = getSharedPreferences("luzzy_prefs", MODE_PRIVATE)
+        if (!prefs.getBoolean("prominent_disclosure_accepted", false)) {
+            AlertDialog.Builder(this)
+                .setTitle(R.string.prominent_disclosure_title)
+                .setMessage(R.string.prominent_disclosure_message)
+                .setPositiveButton(R.string.prominent_disclosure_accept) { _, _ ->
+                    prefs.edit().putBoolean("prominent_disclosure_accepted", true).apply()
+                    proceedLoadMessages()
+                }
+                .setNegativeButton(R.string.prominent_disclosure_decline) { _, _ -> finish() }
+                .setCancelable(false)
+                .show()
+        } else {
+            proceedLoadMessages()
+        }
+    }
+
+    private fun proceedLoadMessages() {
         if (isQPlus()) {
             val roleManager = getSystemService(RoleManager::class.java)
             if (roleManager!!.isRoleAvailable(RoleManager.ROLE_SMS)) {
