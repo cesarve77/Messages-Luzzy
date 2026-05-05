@@ -166,8 +166,6 @@ class SettingsActivity : SimpleActivity() {
         setupMessagesExport()
         setupMessagesImport()
 
-        setupTipJar()
-        setupAbout()
         updateTextColors(binding.settingsNestedScrollview)
 
         if (blockedNumbersAtPause != -1 && blockedNumbersAtPause != getBlockedNumbers().hashCode()) {
@@ -187,8 +185,7 @@ class SettingsActivity : SimpleActivity() {
                 settingsArchivedMessagesLabel,
                 settingsRecycleBinLabel,
                 settingsSecurityLabel,
-                settingsBackupsLabel,
-                settingsOtherLabel
+                settingsBackupsLabel
             ).forEach {
                 it.setTextColor(properPrimaryColor)
             }
@@ -205,8 +202,7 @@ class SettingsActivity : SimpleActivity() {
                 settingsRecycleBinHolder,
                 settingsArchivedMessagesHolder,
                 settingsSecurityHolder,
-                settingsBackupsHolder,
-                settingsOtherHolder
+                settingsBackupsHolder
             ).forEach {
                 it.setCardBackgroundColor(surfaceColor)
             }
@@ -219,8 +215,7 @@ class SettingsActivity : SimpleActivity() {
                 settingsCustomizeNotificationsChevron,
                 settingsImportMessagesChevron,
                 settingsExportMessagesChevron,
-                settingsTipJarChevron,
-                settingsAboutChevron
+                settingsImportMessagesChevron
             ).forEach {
                 it.applyColorFilter(properTextColor)
             }
@@ -1216,28 +1211,9 @@ class SettingsActivity : SimpleActivity() {
 
     private fun hasColorChanged(old: Int, new: Int) = abs(old - new) > 1
 
-    private fun setupTipJar() = binding.apply {
-        settingsTipJarHolder.apply {
-            beVisibleIf(isPro())
-            background.applyColorFilter(getColoredMaterialStatusBarColor())
-            setOnClickListener {
-                launchPurchase()
-            }
-        }
-    }
-
-    @SuppressLint("SetTextI18n")
-    private fun setupAbout() = binding.apply {
-        settingsAboutVersion.text = "Version: " + BuildConfig.VERSION_NAME
-        settingsAboutHolder.setOnClickListener {
-            launchAbout()
-        }
-    }
-
     private fun updatePro(isPro: Boolean = isPro()) {
         binding.apply {
             settingsPurchaseThankYouHolder.beGoneIf(isPro)
-            settingsTipJarHolder.beVisibleIf(isPro)
 
             val stringId =
                 if (isRTLLayout) com.goodwy.strings.R.string.swipe_right_action

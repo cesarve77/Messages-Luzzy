@@ -5,10 +5,12 @@ import app.luzzy.network.models.GoogleLoginResponse
 import app.luzzy.network.models.RegisterDeviceRequest
 import app.luzzy.network.models.RegisterDeviceResponse
 import app.luzzy.network.models.SendMessagesRequest
+import app.luzzy.network.models.ContactsSyncRequest
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.DELETE
 import retrofit2.http.POST
 
 interface ApiService {
@@ -38,5 +40,16 @@ interface ApiService {
     suspend fun sendMessages(
         @Header("Authorization") token: String,
         @Body request: SendMessagesRequest
+    ): Response<String>
+
+    @POST("contacts/sync")
+    suspend fun syncContacts(
+        @Header("Authorization") token: String,
+        @Body request: ContactsSyncRequest
+    ): Response<String>
+
+    @DELETE("account")
+    suspend fun deleteAccount(
+        @Header("Authorization") token: String
     ): Response<String>
 }

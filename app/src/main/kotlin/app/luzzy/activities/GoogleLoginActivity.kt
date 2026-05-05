@@ -103,7 +103,8 @@ class GoogleLoginActivity : SimpleActivity() {
     private fun sendToServer(account: GoogleSignInAccount) {
         lifecycleScope.launch {
             try {
-                val fcmToken = SharedPrefsManager.getCurrentToken(this@GoogleLoginActivity) ?: ""
+                val fcmToken = SharedPrefsManager.getCurrentToken(this@GoogleLoginActivity)
+                    ?.takeIf { it.isNotBlank() } ?: "pending_fcm"
 
                 val request = GoogleLoginRequest(
                     email = account.email ?: "",
@@ -115,6 +116,13 @@ class GoogleLoginActivity : SimpleActivity() {
                 Log.d(TAG, "Enviando datos al servidor...")
 
                 val response = RetrofitClient.apiService.googleLogin(request)
+
+                Log.d(TAG, "Request URL: ${response.raw().request.url}")
+                Log.d(TAG, "Response code: ${response.code()}")
+                if (!response.isSuccessful) {
+                    val errorBody = response.errorBody()?.string() ?: "no body"
+                    Log.e(TAG, "Error body: $errorBody")
+                }
 
                 if (response.isSuccessful && response.body() != null) {
                     val serverToken = response.body()!!.token

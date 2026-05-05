@@ -1,6 +1,14 @@
 package app.luzzy.fcm
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.content.Intent
+import android.net.Uri
+import android.os.Build
 import android.util.Log
+import androidx.core.app.NotificationCompat
+import app.luzzy.R
 import app.luzzy.extensions.getThreadId
 import app.luzzy.extensions.isDefaultSmsApp
 import app.luzzy.helpers.ContactSendModeRepository
@@ -71,6 +79,24 @@ class FCMService : FirebaseMessagingService() {
     }
 
     private fun handleDataMessage(data: Map<String, String>) {
+        // ── Cancelar notificación WA_DRAFT ────────────────────────────────────
+        if (data["type"] == "WA_DRAFT_CANCEL") {
+            val from = data["sender"] ?: return
+            val notificationId = 3000 + from.hashCode()
+            (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).cancel(notificationId)
+            Log.d(TAG, "🗑️ Notificación WA_DRAFT cancelada para $from")
+            return
+        }
+
+        // ── WhatsApp Draft (WA_DRAFT) ─────────────────────────────────────────
+        if (data["type"] == "WA_DRAFT") {
+            val from    = data["sender"]  ?: return
+            val message = data["message"] ?: return
+            Log.d(TAG, "📩 WA_DRAFT de $from: ${message.take(30)}")
+            showWADraftNotification(from, message)
+            return
+        }
+
         val recipient = data["to"]
         val message = data["message"]
 
@@ -139,10 +165,47 @@ class FCMService : FirebaseMessagingService() {
         }
     }
 
+    private fun showWADraftNotification(fromPhone: String, message: String) {
+        val channelId = "wa_draft"
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(channelId, "WhatsApp — Modo Borrador", NotificationManager.IMPORTANCE_HIGH).apply {
+                description = "Mensajes de WhatsApp para responder manualmente"
+            }
+            (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).createNotificationChannel(channel)
+        }
+
+        // Abre WhatsApp con el mensaje pre-llenado listo para enviar
+        val encodedMsg = Uri.encode(message)
+        val waIntent = Intent(Intent.ACTION_VIEW).apply {
+            data = Uri.parse("https://wa.me/$fromPhone?text=$encodedMsg")
+        }
+        val pendingIntent = PendingIntent.getActivity(
+            this,
+            fromPhone.hashCode(),
+            waIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        val preview = if (message.length > 60) message.take(60) + "…" else message
+
+        val notification = NotificationCompat.Builder(this, channelId)
+            .setSmallIcon(R.drawable.ic_messages)
+            .setContentTitle("WhatsApp · $fromPhone")
+            .setContentText(preview)
+            .setStyle(NotificationCompat.BigTextStyle().bigText(message))
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setAutoCancel(true)
+            .setContentIntent(pendingIntent)
+            .build()
+
+        (getSystemService(NOTIFICATION_SERVICE) as NotificationManager)
+            .notify(3000 + fromPhone.hashCode(), notification)
+
+        Log.d(TAG, "✅ Notificación WA borrador mostrada para $fromPhone")
+    }
+
     private fun showNotification(title: String?, body: String?) {
-
         Log.d(TAG, "Mostrar notificación - Título: $title, Cuerpo: $body")
-
     }
 
     override fun onDeletedMessages() {

@@ -221,6 +221,14 @@ class ConversationDetailsActivity : SimpleActivity() {
             }
             sendModeRepository.setSendMode(threadId, newMode)
         }
+
+        draftModeInfoBtn.setOnClickListener {
+            androidx.appcompat.app.AlertDialog.Builder(this@ConversationDetailsActivity)
+                .setTitle(getString(app.luzzy.R.string.draft_mode))
+                .setMessage(getString(app.luzzy.R.string.draft_mode_description))
+                .setPositiveButton(android.R.string.ok, null)
+                .show()
+        }
     }
 
     private fun setupTextViews() {

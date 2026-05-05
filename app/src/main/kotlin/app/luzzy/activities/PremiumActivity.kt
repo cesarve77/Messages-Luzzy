@@ -1,28 +1,44 @@
 package app.luzzy.activities
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.lifecycle.lifecycleScope
 import com.goodwy.commons.activities.BaseSimpleActivity
 import app.luzzy.R
+import app.luzzy.auth.GoogleAuthRepository
 import app.luzzy.billing.BillingManager
 import app.luzzy.billing.PremiumRepository
 import app.luzzy.databinding.ActivityPremiumBinding
+import kotlinx.coroutines.launch
 
 class PremiumActivity : BaseSimpleActivity() {
 
     private lateinit var binding: ActivityPremiumBinding
     private lateinit var billingManager: BillingManager
     private lateinit var premiumRepository: PremiumRepository
+    private lateinit var googleAuthRepository: GoogleAuthRepository
+
+    private val loginLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == RESULT_OK) {
+            updateAccountSection()
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityPremiumBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        googleAuthRepository = GoogleAuthRepository(this)
         setupToolbar()
         initBilling()
         setupUI()
+        updateAccountSection()
     }
 
     private fun setupToolbar() {
@@ -74,12 +90,33 @@ class PremiumActivity : BaseSimpleActivity() {
         // Botón de restaurar compras
         binding.restorePurchasesButton.setOnClickListener {
             showLoading()
-            billingManager.initialize() // Esto verificará las compras existentes
-            Toast.makeText(
-                this,
-                getString(R.string.checking_purchases),
-                Toast.LENGTH_SHORT
-            ).show()
+            billingManager.initialize()
+            Toast.makeText(this, getString(R.string.checking_purchases), Toast.LENGTH_SHORT).show()
+        }
+
+        // Botón iniciar sesión
+        binding.loginButton.setOnClickListener {
+            loginLauncher.launch(Intent(this, GoogleLoginActivity::class.java))
+        }
+
+        // Botón cerrar sesión
+        binding.logoutButton.setOnClickListener {
+            lifecycleScope.launch {
+                googleAuthRepository.logout()
+                updateAccountSection()
+            }
+        }
+    }
+
+    private fun updateAccountSection() {
+        val isLoggedIn = googleAuthRepository.isLoggedIn()
+        if (isLoggedIn) {
+            binding.accountInfoLayout.visibility = View.VISIBLE
+            binding.loginPromptLayout.visibility = View.GONE
+            binding.accountEmail.text = googleAuthRepository.getUserEmail()
+        } else {
+            binding.accountInfoLayout.visibility = View.GONE
+            binding.loginPromptLayout.visibility = View.VISIBLE
         }
     }
 

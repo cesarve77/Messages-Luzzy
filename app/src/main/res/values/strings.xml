@@ -194,26 +194,40 @@
     <string name="general_settings">Configuración General</string>
     <string name="premium_settings">Configuración Premium</string>
     <string name="unlock_premium_features">Desbloquea funciones premium</string>
-    <string name="premium_features_description">Accede a auto-respuesta, firma de SMS y más funciones exclusivas</string>
+    <string name="premium_features_description">Accede a auto-respuesta, perfil profesional y más funciones exclusivas</string>
 
-    <string name="nombre_usuario">Nombre de Usuario</string>
+    <string name="nombre_usuario">Tu nombre</string>
+    <string name="nombre_usuario_helper">Ej: Valentina — el bot se presentará con este nombre</string>
     <string name="tema_color">Color de Tema</string>
-    <string name="mensaje_automatico">Mensaje Automático</string>
-    <string name="firma_sms">Firma de SMS</string>
 
     <string name="auto_respuesta_activada">Auto-Respuesta</string>
-    <string name="auto_respuesta_desc">Responder automáticamente a mensajes entrantes</string>
+    <string name="auto_respuesta_desc">El bot responde automáticamente a los mensajes entrantes</string>
+    <string name="usar_emojis">Usar emojis</string>
+    <string name="usar_emojis_desc">El bot incluye emojis expresivos en sus respuestas</string>
 
     <string name="perfil_profesional">Perfil Profesional</string>
     <string name="mis_servicios">Mis servicios</string>
     <string name="servicio_hint">Nombre del servicio</string>
-    <string name="precio_hint">Precio (o "A consultar")</string>
+    <string name="precio_hint">Precio (ej: $50 o "A consultar")</string>
     <string name="agregar_servicio">+ Agregar servicio</string>
+    <string name="mis_duraciones">Duraciones disponibles</string>
+    <string name="duracion_hint">Ej: 1 hora, 2 horas, 30 min</string>
+    <string name="agregar_duracion">+ Agregar duración</string>
     <string name="lugar_trabajo">Lugar de trabajo</string>
-    <string name="lugar_trabajo_hint">Ej: A domicilio, hoteles, local propio…</string>
+    <string name="lugar_trabajo_hint">Ej: A domicilio, hoteles cercanos, local en zona norte</string>
+    <string name="lugar_trabajo_required">El lugar de atención es obligatorio</string>
     <string name="info_general">Información general</string>
-    <string name="adn_ia">ADN de la IA</string>
-    <string name="adn_ia_hint">Describe cómo debe responder la IA tus mensajes…</string>
+    <string name="info_general_hint">Ej: Disponible lunes a viernes de 10am a 8pm. Solo zona norte.</string>
+    <string name="adn_ia">ADN del bot</string>
+    <string name="adn_ia_hint">Ej: Soy cálida y directa. Llamo al cliente "amor". Cierro con gancho.</string>
+
+    <string name="danger_zone">Zona de peligro</string>
+    <string name="delete_account">Eliminar mi cuenta</string>
+    <string name="delete_account_desc">Borra permanentemente tu perfil, configuración, conversaciones y citas. Esta acción no se puede deshacer.</string>
+    <string name="delete_account_confirm_title">¿Eliminar tu cuenta?</string>
+    <string name="delete_account_confirm_msg">Se eliminarán todos tus datos del servidor. Los SMS en tu dispositivo no se ven afectados. Esta acción es irreversible.</string>
+    <string name="delete_account_success">Cuenta eliminada correctamente</string>
+    <string name="delete_account_error">Error al eliminar la cuenta</string>
 
     <string name="notificaciones_silenciosas">Notificaciones Silenciosas</string>
     <string name="notificaciones_silenciosas_desc">Desactivar sonidos de notificación</string>
@@ -268,7 +282,7 @@
     <!-- Auto Response Mode -->
     <string name="auto_response">Auto Response</string>
     <string name="draft_mode">Draft mode</string>
-    <string name="draft_mode_description">Auto responses will be saved as draft and you will receive a notification to send them manually</string>
+    <string name="draft_mode_description">Cuando este modo está activo, la IA genera una respuesta pero NO la envía automáticamente.\n\nEn su lugar, recibirás una notificación en tu celular. Al tocarla, WhatsApp se abre con la respuesta ya escrita en el campo de texto — solo tienes que revisarla y tocar Enviar.\n\nIdeal para contactos que prefieren tu toque personal.</string>
     <string name="send_mode_description">Auto responses will be sent directly without confirmation</string>
 
     <!-- Prominent Disclosure (Google Play User Data policy) -->

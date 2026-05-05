@@ -30,6 +30,7 @@
             android:orientation="vertical"
             android:padding="@dimen/activity_margin">
 
+            <!-- ── Banner premium (solo si no es premium) ── -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/premium_banner"
                 android:layout_width="match_parent"
@@ -71,7 +72,7 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-
+            <!-- ── Google Account ── -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -146,6 +147,10 @@
                     </LinearLayout>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
+
+            <!-- ══════════════════════════════════════════════
+                 CONFIGURACIÓN GENERAL
+            ══════════════════════════════════════════════ -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -154,11 +159,13 @@
                 android:textStyle="bold"
                 android:layout_marginBottom="@dimen/medium_margin" />
 
+            <!-- Nombre de usuario -->
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/nombre_usuario_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/nombre_usuario"
+                app:helperText="@string/nombre_usuario_helper"
                 style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                 android:layout_marginBottom="@dimen/medium_margin">
 
@@ -170,22 +177,7 @@
                     android:maxLines="1" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/tema_color_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/tema_color"
-                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
-                android:layout_marginBottom="@dimen/medium_margin">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/tema_color_input"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="text"
-                    android:maxLines="1" />
-            </com.google.android.material.textfield.TextInputLayout>
-
+            <!-- Notificaciones silenciosas -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -220,6 +212,7 @@
                     android:layout_height="wrap_content" />
             </LinearLayout>
 
+            <!-- Modo oscuro -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -254,6 +247,9 @@
                     android:layout_height="wrap_content" />
             </LinearLayout>
 
+            <!-- ══════════════════════════════════════════════
+                 CONFIGURACIÓN PREMIUM (sincronizada con web)
+            ══════════════════════════════════════════════ -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -262,46 +258,14 @@
                 android:textStyle="bold"
                 android:layout_marginBottom="@dimen/medium_margin" />
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/mensaje_automatico_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/mensaje_automatico"
-                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
-                android:layout_marginBottom="@dimen/medium_margin">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/mensaje_automatico_input"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="textMultiLine"
-                    android:maxLines="3"
-                    android:gravity="top|start" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/firma_sms_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/firma_sms"
-                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
-                android:layout_marginBottom="@dimen/medium_margin">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/firma_sms_input"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="text"
-                    android:maxLines="2" />
-            </com.google.android.material.textfield.TextInputLayout>
-
+            <!-- Auto-Respuesta -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
                 android:paddingVertical="@dimen/medium_margin"
-                android:layout_marginBottom="@dimen/big_margin">
+                android:layout_marginBottom="@dimen/small_margin">
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -329,7 +293,42 @@
                     android:layout_height="wrap_content" />
             </LinearLayout>
 
-            <!-- ===== PERFIL PROFESIONAL (Premium) ===== -->
+            <!-- Usar emojis -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingVertical="@dimen/medium_margin"
+                android:layout_marginBottom="@dimen/big_margin">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/usar_emojis"
+                        android:textSize="@dimen/normal_text_size" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/usar_emojis_desc"
+                        android:textSize="@dimen/smaller_text_size"
+                        android:alpha="0.7" />
+                </LinearLayout>
+
+                <com.google.android.material.switchmaterial.SwitchMaterial
+                    android:id="@+id/usar_emojis_switch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <!-- ── Perfil Profesional ── -->
             <TextView
                 android:id="@+id/perfil_profesional_title"
                 android:layout_width="wrap_content"
@@ -339,7 +338,7 @@
                 android:textStyle="bold"
                 android:layout_marginBottom="@dimen/medium_margin" />
 
-            <!-- Servicios -->
+            <!-- Mis servicios -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -363,12 +362,37 @@
                 style="@style/Widget.Material3.Button.OutlinedButton"
                 app:cornerRadius="8dp" />
 
+            <!-- Duraciones -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/mis_duraciones"
+                android:textSize="@dimen/normal_text_size"
+                android:layout_marginBottom="@dimen/small_margin" />
+
+            <LinearLayout
+                android:id="@+id/duraciones_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/agregar_duracion_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/agregar_duracion"
+                android:layout_marginTop="@dimen/small_margin"
+                android:layout_marginBottom="@dimen/medium_margin"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                app:cornerRadius="8dp" />
+
             <!-- Lugar de trabajo -->
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/lugar_trabajo_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/lugar_trabajo_hint"
+                android:hint="@string/lugar_trabajo"
+                app:helperText="@string/lugar_trabajo_hint"
                 style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                 android:layout_marginBottom="@dimen/medium_margin">
 
@@ -387,6 +411,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/info_general"
+                app:helperText="@string/info_general_hint"
                 style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                 android:layout_marginBottom="@dimen/medium_margin">
 
@@ -399,12 +424,13 @@
                     android:gravity="top|start" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- ADN de la IA -->
+            <!-- ADN del bot -->
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/adn_ia_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/adn_ia_hint"
+                android:hint="@string/adn_ia"
+                app:helperText="@string/adn_ia_hint"
                 style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                 android:layout_marginBottom="@dimen/big_margin">
 
@@ -424,6 +450,51 @@
                 android:text="@string/save_settings"
                 android:textSize="16sp"
                 app:cornerRadius="8dp" />
+
+            <!-- Zona de peligro -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/big_margin"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="0dp"
+                app:strokeColor="#33D25140"
+                app:strokeWidth="1.5dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/activity_margin">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/danger_zone"
+                        android:textColor="#D25140"
+                        android:textSize="@dimen/normal_text_size"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="@dimen/small_margin" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/delete_account_desc"
+                        android:textSize="@dimen/smaller_text_size"
+                        android:alpha="0.7"
+                        android:layout_marginBottom="@dimen/medium_margin" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/delete_account_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/delete_account"
+                        app:cornerRadius="8dp"
+                        style="@style/Widget.Material3.Button.OutlinedButton"
+                        app:strokeColor="#D25140"
+                        android:textColor="#D25140" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

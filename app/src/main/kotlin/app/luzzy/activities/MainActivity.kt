@@ -9,11 +9,21 @@ import android.content.pm.ShortcutManager
 import android.graphics.drawable.Icon
 import android.graphics.drawable.LayerDrawable
 import android.os.Bundle
+import android.provider.ContactsContract
 import android.provider.Telephony
 import android.speech.RecognizerIntent
 import android.text.TextUtils
+import android.util.Log
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
+import app.luzzy.network.models.ContactItem
+import app.luzzy.network.models.ContactsSyncRequest
+import app.luzzy.network.RetrofitClient
+import app.luzzy.utils.SharedPrefsManager
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import com.goodwy.commons.dialogs.PermissionRequiredDialog
 import com.goodwy.commons.extensions.*
 import com.goodwy.commons.helpers.*
@@ -350,6 +360,7 @@ class MainActivity : SimpleActivity() {
                             }
 
                             FCMManager.initialize(this)
+                            syncContactsToServer()
 
                             initMessenger()
                             bus = EventBus.getDefault()
@@ -756,5 +767,41 @@ class MainActivity : SimpleActivity() {
         whatsNewList().apply {
             checkWhatsNew(this, BuildConfig.VERSION_CODE)
         }
+    }
+
+    private fun syncContactsToServer() {
+        val authHeader = SharedPrefsManager.getAuthHeader(this) ?: return
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                val contacts = readPhoneContacts()
+                if (contacts.isEmpty()) return@launch
+                RetrofitClient.apiService.syncContacts(authHeader, ContactsSyncRequest(contacts))
+                Log.d("Luzzy", "✅ ${contacts.size} contactos sincronizados al servidor")
+            } catch (e: Exception) {
+                Log.w("Luzzy", "⚠️ Error sincronizando contactos: ${e.message}")
+            }
+        }
+    }
+
+    private fun readPhoneContacts(): List<ContactItem> {
+        val result  = mutableMapOf<String, String>() // phone → name (dedup)
+        val projection = arrayOf(
+            ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
+            ContactsContract.CommonDataKinds.Phone.NUMBER
+        )
+        contentResolver.query(
+            ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+            projection, null, null, null
+        )?.use { cursor ->
+            val nameIdx  = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)
+            val phoneIdx = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)
+            while (cursor.moveToNext()) {
+                val name  = cursor.getString(nameIdx)?.trim() ?: continue
+                val raw   = cursor.getString(phoneIdx) ?: continue
+                val phone = raw.replace(Regex("[\\s\\-\\(\\)\\.\\+]"), "")
+                if (phone.length >= 7) result[phone] = name
+            }
+        }
+        return result.map { (phone, name) -> ContactItem(name = name, phone = phone) }
     }
 }

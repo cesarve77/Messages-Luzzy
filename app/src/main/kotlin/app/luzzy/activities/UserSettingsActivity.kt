@@ -55,26 +55,17 @@ class UserSettingsActivity : SimpleActivity() {
     }
 
     private fun setupUI() {
-        binding.saveButton.setOnClickListener {
-            saveConfiguration()
-        }
-
+        binding.saveButton.setOnClickListener { saveConfiguration() }
         binding.upgradePremiumButton.setOnClickListener {
             startActivity(Intent(this, PremiumActivity::class.java))
         }
-
         binding.googleLoginButton.setOnClickListener {
-            val intent = Intent(this, GoogleLoginActivity::class.java)
-            googleLoginLauncher.launch(intent)
+            googleLoginLauncher.launch(Intent(this, GoogleLoginActivity::class.java))
         }
-
-        binding.googleLogoutButton.setOnClickListener {
-            showLogoutConfirmationDialog()
-        }
-
-        binding.agregarServicioBtn.setOnClickListener {
-            addServiceRow()
-        }
+        binding.googleLogoutButton.setOnClickListener { showLogoutConfirmationDialog() }
+        binding.agregarServicioBtn.setOnClickListener { addServiceRow() }
+        binding.agregarDuracionBtn.setOnClickListener { addDuracionRow() }
+        binding.deleteAccountButton.setOnClickListener { showDeleteAccountDialog() }
 
         updatePremiumStatus(isPremium)
     }
@@ -94,10 +85,7 @@ class UserSettingsActivity : SimpleActivity() {
             layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1.5f)
         }
         val servicioInput = TextInputEditText(servicioLayout.context).apply {
-            layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            )
+            layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
             maxLines = 1
             setText(servicio)
         }
@@ -110,10 +98,7 @@ class UserSettingsActivity : SimpleActivity() {
             }
         }
         val precioInput = TextInputEditText(precioLayout.context).apply {
-            layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            )
+            layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
             maxLines = 1
             setText(precio)
         }
@@ -122,10 +107,7 @@ class UserSettingsActivity : SimpleActivity() {
         val deleteBtn = ImageButton(this).apply {
             setImageResource(android.R.drawable.ic_menu_close_clear_cancel)
             background = null
-            layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            ).also {
+            layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT).also {
                 it.gravity = android.view.Gravity.CENTER_VERTICAL
                 it.marginStart = dp8
             }
@@ -139,30 +121,72 @@ class UserSettingsActivity : SimpleActivity() {
         binding.serviciosContainer.addView(row)
     }
 
+    private fun addDuracionRow(duracion: String = "", precio: String = "") {
+        val dp8 = (8 * resources.displayMetrics.density).toInt()
+        val row = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).also { it.bottomMargin = dp8 }
+        }
+
+        val duracionLayout = TextInputLayout(this, null, com.google.android.material.R.attr.textInputOutlinedStyle).apply {
+            hint = getString(R.string.duracion_hint)
+            layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1.5f)
+        }
+        val duracionInput = TextInputEditText(duracionLayout.context).apply {
+            layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+            maxLines = 1
+            setText(duracion)
+        }
+        duracionLayout.addView(duracionInput)
+
+        val precioLayout = TextInputLayout(this, null, com.google.android.material.R.attr.textInputOutlinedStyle).apply {
+            hint = getString(R.string.precio_hint)
+            layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f).also {
+                it.marginStart = dp8
+            }
+        }
+        val precioInput = TextInputEditText(precioLayout.context).apply {
+            layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+            maxLines = 1
+            setText(precio)
+        }
+        precioLayout.addView(precioInput)
+
+        val deleteBtn = ImageButton(this).apply {
+            setImageResource(android.R.drawable.ic_menu_close_clear_cancel)
+            background = null
+            layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT).also {
+                it.gravity = android.view.Gravity.CENTER_VERTICAL
+                it.marginStart = dp8
+            }
+            contentDescription = "Eliminar duración"
+            setOnClickListener { binding.duracionesContainer.removeView(row) }
+        }
+
+        row.addView(duracionLayout)
+        row.addView(precioLayout)
+        row.addView(deleteBtn)
+        binding.duracionesContainer.addView(row)
+    }
+
     private fun showLogoutConfirmationDialog() {
         AlertDialog.Builder(this)
             .setTitle(R.string.logout_confirmation_title)
             .setMessage(R.string.logout_confirmation_message_detail)
-            .setPositiveButton(R.string.logout) { _, _ ->
-                performLogout()
-            }
+            .setPositiveButton(R.string.logout) { _, _ -> performLogout() }
             .setNegativeButton(android.R.string.cancel, null)
             .show()
     }
 
     private fun performLogout() {
         setLoading(true)
-
         lifecycleScope.launch {
             try {
                 val success = googleAuthRepository.logout(revokeAccess = false)
-
-                if (success) {
-                    toast(R.string.google_logout_success)
-                } else {
-                    toast(R.string.logout_failed)
-                }
-
+                toast(if (success) R.string.google_logout_success else R.string.logout_failed)
                 updateGoogleLoginUI()
             } catch (e: Exception) {
                 toast(R.string.logout_failed)
@@ -174,34 +198,27 @@ class UserSettingsActivity : SimpleActivity() {
 
     private fun updateGoogleLoginUI() {
         val isLoggedIn = googleAuthRepository.isLoggedIn()
-
+        binding.googleLoggedInLayout.visibility  = if (isLoggedIn) View.VISIBLE else View.GONE
+        binding.googleLoggedOutLayout.visibility = if (isLoggedIn) View.GONE   else View.VISIBLE
         if (isLoggedIn) {
-            binding.googleLoggedInLayout.visibility = View.VISIBLE
-            binding.googleLoggedOutLayout.visibility = View.GONE
-
             val email = googleAuthRepository.getUserEmail() ?: ""
             binding.googleAccountEmail.text = getString(R.string.logged_in_with_google, email)
-        } else {
-            binding.googleLoggedInLayout.visibility = View.GONE
-            binding.googleLoggedOutLayout.visibility = View.VISIBLE
         }
     }
 
     private fun loadConfiguration() {
         setLoading(true)
-
         lifecycleScope.launch {
             try {
                 val authHeader = SharedPrefsManager.getAuthHeader(this@UserSettingsActivity)
                 if (authHeader != null) {
                     val response = RetrofitClient.apiService.getSettings(authHeader)
-
                     if (response.isSuccessful && response.body() != null) {
-                        val settings = response.body()!!
-                        updateUI(settings)
+                        updateUI(response.body()!!)
                     }
                 }
             } catch (e: Exception) {
+                // silencioso — la UI queda en blanco si no hay conexión
             } finally {
                 setLoading(false)
             }
@@ -209,14 +226,16 @@ class UserSettingsActivity : SimpleActivity() {
     }
 
     private fun updateUI(settings: Map<String, Any>) {
+        // Campos generales (sincronizados con web)
         binding.nombreUsuarioInput.setText(settings["nombre_usuario"]?.toString() ?: "")
-        binding.temaColorInput.setText(settings["tema_color"]?.toString() ?: "")
-        binding.mensajeAutomaticoInput.setText(settings["mensaje_automatico"]?.toString() ?: "")
-        binding.firmaSmsInput.setText(settings["firma_sms"]?.toString() ?: "")
 
+        // Campos locales del dispositivo
         binding.notificacionesSilenciosasSwitch.isChecked = settings["notificaciones_silenciosas"] as? Boolean ?: false
-        binding.modoOscuroSwitch.isChecked = settings["modo_oscuro"] as? Boolean ?: false
+        binding.modoOscuroSwitch.isChecked               = settings["modo_oscuro"] as? Boolean ?: false
+
+        // Campos premium (sincronizados con web)
         binding.autoRespuestaSwitch.isChecked = settings["auto_respuesta_activada"] as? Boolean ?: false
+        binding.usarEmojisSwitch.isChecked    = settings["usar_emojis"] as? Boolean ?: true
 
         // Perfil profesional
         binding.serviciosContainer.removeAllViews()
@@ -225,10 +244,20 @@ class UserSettingsActivity : SimpleActivity() {
             val map = item as? Map<*, *>
             addServiceRow(
                 servicio = map?.get("servicio")?.toString() ?: "",
-                precio = map?.get("precio")?.toString() ?: ""
+                precio   = map?.get("precio")?.toString()   ?: ""
             )
         }
         if (binding.serviciosContainer.childCount == 0) addServiceRow()
+
+        binding.duracionesContainer.removeAllViews()
+        val duracionesList = settings["duraciones"] as? List<*>
+        duracionesList?.forEach { item ->
+            val map = item as? Map<*, *>
+            addDuracionRow(
+                duracion = map?.get("duracion")?.toString() ?: "",
+                precio   = map?.get("precio")?.toString()   ?: ""
+            )
+        }
 
         binding.lugarTrabajoInput.setText(settings["lugar_trabajo"]?.toString() ?: "")
         binding.infoGeneralInput.setText(settings["info_general"]?.toString() ?: "")
@@ -236,34 +265,35 @@ class UserSettingsActivity : SimpleActivity() {
     }
 
     private fun updatePremiumStatus(premium: Boolean) {
-        if (premium) {
-            binding.premiumBanner.visibility = View.GONE
-            enablePremiumFeatures(true)
-        } else {
-            binding.premiumBanner.visibility = View.VISIBLE
-            enablePremiumFeatures(false)
-        }
+        binding.premiumBanner.visibility = if (premium) View.GONE else View.VISIBLE
+        enablePremiumFeatures(premium)
     }
 
     private fun enablePremiumFeatures(enabled: Boolean) {
-        binding.mensajeAutomaticoInput.isEnabled = enabled
-        binding.firmaSmsInput.isEnabled = enabled
-        binding.autoRespuestaSwitch.isEnabled = enabled
-        binding.lugarTrabajoInput.isEnabled = enabled
-        binding.infoGeneralInput.isEnabled = enabled
-        binding.adnIaInput.isEnabled = enabled
-        binding.agregarServicioBtn.isEnabled = enabled
-
         val alpha = if (enabled) 1.0f else 0.5f
-        binding.mensajeAutomaticoLayout.alpha = alpha
-        binding.firmaSmsLayout.alpha = alpha
-        binding.autoRespuestaSwitch.alpha = alpha
-        binding.perfilProfesionalTitle.alpha = alpha
-        binding.lugarTrabajoLayout.alpha = alpha
-        binding.infoGeneralLayout.alpha = alpha
-        binding.adnIaLayout.alpha = alpha
-        binding.agregarServicioBtn.alpha = alpha
-        binding.serviciosContainer.alpha = alpha
+
+        binding.autoRespuestaSwitch.isEnabled  = enabled
+        binding.autoRespuestaSwitch.alpha      = alpha
+        binding.usarEmojisSwitch.isEnabled     = enabled
+        binding.usarEmojisSwitch.alpha         = alpha
+
+        binding.agregarServicioBtn.isEnabled   = enabled
+        binding.agregarServicioBtn.alpha       = alpha
+        binding.serviciosContainer.alpha       = alpha
+        binding.agregarDuracionBtn.isEnabled   = enabled
+        binding.agregarDuracionBtn.alpha       = alpha
+        binding.duracionesContainer.alpha      = alpha
+
+        binding.perfilProfesionalTitle.alpha   = alpha
+        binding.lugarTrabajoLayout.isEnabled   = enabled
+        binding.lugarTrabajoLayout.alpha       = alpha
+        binding.lugarTrabajoInput.isEnabled    = enabled
+        binding.infoGeneralLayout.isEnabled    = enabled
+        binding.infoGeneralLayout.alpha        = alpha
+        binding.infoGeneralInput.isEnabled     = enabled
+        binding.adnIaLayout.isEnabled          = enabled
+        binding.adnIaLayout.alpha              = alpha
+        binding.adnIaInput.isEnabled           = enabled
     }
 
     private fun saveConfiguration() {
@@ -271,45 +301,50 @@ class UserSettingsActivity : SimpleActivity() {
 
         val settings = mutableMapOf<String, Any>()
 
-        val nombreUsuario = binding.nombreUsuarioInput.text.toString()
-        if (nombreUsuario.isNotBlank()) {
-            settings["nombre_usuario"] = nombreUsuario
-        }
+        // Generales
+        val nombreUsuario = binding.nombreUsuarioInput.text.toString().trim()
+        if (nombreUsuario.isNotBlank()) settings["nombre_usuario"] = nombreUsuario
 
-        val temaColor = binding.temaColorInput.text.toString()
-        if (temaColor.isNotBlank()) {
-            settings["tema_color"] = temaColor
-        }
+        // Locales (solo dispositivo)
+        settings["notificaciones_silenciosas"] = binding.notificacionesSilenciosasSwitch.isChecked
+        settings["modo_oscuro"]                = binding.modoOscuroSwitch.isChecked
 
+        // Premium — sincronizados con web
         if (isPremium) {
-            val mensajeAutomatico = binding.mensajeAutomaticoInput.text.toString()
-            if (mensajeAutomatico.isNotBlank()) {
-                settings["mensaje_automatico"] = mensajeAutomatico
-            }
-
-            val firmaSms = binding.firmaSmsInput.text.toString()
-            if (firmaSms.isNotBlank()) {
-                settings["firma_sms"] = firmaSms
-            }
-
             settings["auto_respuesta_activada"] = binding.autoRespuestaSwitch.isChecked
+            settings["usar_emojis"]             = binding.usarEmojisSwitch.isChecked
 
-            // Perfil profesional
             val servicios = mutableListOf<Map<String, String>>()
             for (i in 0 until binding.serviciosContainer.childCount) {
-                val row = binding.serviciosContainer.getChildAt(i) as? LinearLayout ?: continue
+                val row          = binding.serviciosContainer.getChildAt(i) as? LinearLayout ?: continue
                 val servicioLayout = row.getChildAt(0) as? TextInputLayout
-                val precioLayout = row.getChildAt(1) as? TextInputLayout
+                val precioLayout   = row.getChildAt(1) as? TextInputLayout
                 val nombre = (servicioLayout?.editText as? TextInputEditText)?.text?.toString()?.trim() ?: ""
-                val precio = (precioLayout?.editText as? TextInputEditText)?.text?.toString()?.trim() ?: ""
-                if (nombre.isNotEmpty()) {
-                    servicios.add(mapOf("servicio" to nombre, "precio" to precio))
-                }
+                val precio = (precioLayout?.editText  as? TextInputEditText)?.text?.toString()?.trim() ?: ""
+                if (nombre.isNotEmpty()) servicios.add(mapOf("servicio" to nombre, "precio" to precio))
             }
             settings["servicios"] = servicios
 
+            val duraciones = mutableListOf<Map<String, String>>()
+            for (i in 0 until binding.duracionesContainer.childCount) {
+                val row          = binding.duracionesContainer.getChildAt(i) as? LinearLayout ?: continue
+                val durLayout    = row.getChildAt(0) as? TextInputLayout
+                val precioLayout = row.getChildAt(1) as? TextInputLayout
+                val dur   = (durLayout?.editText  as? TextInputEditText)?.text?.toString()?.trim() ?: ""
+                val precio = (precioLayout?.editText as? TextInputEditText)?.text?.toString()?.trim() ?: ""
+                if (dur.isNotEmpty()) duraciones.add(mapOf("duracion" to dur, "precio" to precio))
+            }
+            settings["duraciones"] = duraciones
+
             val lugarTrabajo = binding.lugarTrabajoInput.text.toString().trim()
-            if (lugarTrabajo.isNotBlank()) settings["lugar_trabajo"] = lugarTrabajo
+            if (lugarTrabajo.isBlank()) {
+                binding.lugarTrabajoLayout.error = getString(R.string.lugar_trabajo_required)
+                binding.lugarTrabajoInput.requestFocus()
+                setLoading(false)
+                return
+            }
+            binding.lugarTrabajoLayout.error = null
+            settings["lugar_trabajo"] = lugarTrabajo
 
             val infoGeneral = binding.infoGeneralInput.text.toString().trim()
             if (infoGeneral.isNotBlank()) settings["info_general"] = infoGeneral
@@ -318,15 +353,11 @@ class UserSettingsActivity : SimpleActivity() {
             if (adn.isNotBlank()) settings["adn"] = adn
         }
 
-        settings["notificaciones_silenciosas"] = binding.notificacionesSilenciosasSwitch.isChecked
-        settings["modo_oscuro"] = binding.modoOscuroSwitch.isChecked
-
         lifecycleScope.launch {
             try {
                 val authHeader = SharedPrefsManager.getAuthHeader(this@UserSettingsActivity)
                 if (authHeader != null) {
                     val response = RetrofitClient.apiService.updateSettings(authHeader, settings)
-
                     if (response.isSuccessful) {
                         toast(R.string.settings_saved)
                         finish()
@@ -338,8 +369,41 @@ class UserSettingsActivity : SimpleActivity() {
                     finish()
                 }
             } catch (e: Exception) {
-                toast(R.string.settings_saved)
-                finish()
+                toast(R.string.error_saving_settings)
+            } finally {
+                setLoading(false)
+            }
+        }
+    }
+
+    private fun showDeleteAccountDialog() {
+        AlertDialog.Builder(this)
+            .setTitle(R.string.delete_account_confirm_title)
+            .setMessage(R.string.delete_account_confirm_msg)
+            .setPositiveButton(R.string.delete_account) { _, _ -> deleteAccount() }
+            .setNegativeButton(android.R.string.cancel, null)
+            .show()
+    }
+
+    private fun deleteAccount() {
+        setLoading(true)
+        lifecycleScope.launch {
+            try {
+                val authHeader = SharedPrefsManager.getAuthHeader(this@UserSettingsActivity)
+                if (authHeader != null) {
+                    val response = RetrofitClient.apiService.deleteAccount(authHeader)
+                    if (response.isSuccessful) {
+                        SharedPrefsManager.clearAll(this@UserSettingsActivity)
+                        toast(R.string.delete_account_success)
+                        val intent = Intent(this@UserSettingsActivity, MainActivity::class.java)
+                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        startActivity(intent)
+                    } else {
+                        toast(R.string.delete_account_error)
+                    }
+                }
+            } catch (e: Exception) {
+                toast(R.string.delete_account_error)
             } finally {
                 setLoading(false)
             }
@@ -347,20 +411,11 @@ class UserSettingsActivity : SimpleActivity() {
     }
 
     private fun setLoading(loading: Boolean) {
-        binding.saveButton.isEnabled = !loading
-        binding.nombreUsuarioInput.isEnabled = !loading
-        binding.temaColorInput.isEnabled = !loading
+        binding.progressIndicator.visibility   = if (loading) View.VISIBLE else View.GONE
+        binding.saveButton.isEnabled           = !loading
+        binding.nombreUsuarioInput.isEnabled   = !loading
         binding.notificacionesSilenciosasSwitch.isEnabled = !loading
-        binding.modoOscuroSwitch.isEnabled = !loading
-
-        if (!loading && isPremium) {
-            enablePremiumFeatures(true)
-        }
-
-        if (loading) {
-            binding.progressIndicator.visibility = View.VISIBLE
-        } else {
-            binding.progressIndicator.visibility = View.GONE
-        }
+        binding.modoOscuroSwitch.isEnabled     = !loading
+        if (!loading && isPremium) enablePremiumFeatures(true)
     }
 }
