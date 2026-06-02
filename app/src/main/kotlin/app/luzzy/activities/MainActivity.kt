@@ -207,7 +207,6 @@ class MainActivity : SimpleActivity() {
                     R.id.premium -> launchPremium()
                     R.id.user_settings -> launchUserSettings()
                     R.id.settings -> launchSettings()
-                    R.id.about -> launchAbout()
                     else -> return@setOnMenuItemClickListener false
                 }
                 return@setOnMenuItemClickListener true

@@ -45,11 +45,11 @@
     <string name="schedule_send_warning">Keep the phone on and make sure there is nothing killing the app while in background.</string>
     <string name="update_message">Update message</string>
     <string name="send_now">Send now</string>
-    <string name="toggle_send_mode">Modo de envío</string>
-    <string name="switch_to_send_mode">Cambiar a modo envío</string>
-    <string name="switch_to_draft_mode">Cambiar a modo borrador</string>
-    <string name="send_mode_enabled">Modo envío activado: Los mensajes se enviarán automáticamente</string>
-    <string name="draft_mode_enabled">Modo borrador activado: Los mensajes se guardarán como borrador</string>
+    <string name="toggle_send_mode">Send mode</string>
+    <string name="switch_to_send_mode">Switch to send mode</string>
+    <string name="switch_to_draft_mode">Switch to draft mode</string>
+    <string name="send_mode_enabled">Send mode enabled: messages will be sent automatically</string>
+    <string name="draft_mode_enabled">Draft mode enabled: messages will be saved as drafts</string>
     <!-- Message details -->
     <string name="message_details">Message details</string>
     <string name="message_details_sender">Sender</string>
@@ -111,7 +111,7 @@
     <string name="group_message_mms">Send group messages as MMS</string>
     <string name="send_long_message_mms">Send long messages as MMS</string>
     <!-- Export / Import -->
-    <string name="messages">Luzzy Mensajería</string>
+    <string name="messages">Luzzy Messaging</string>
     <string name="keywords">Keywords</string>
     <string name="export_messages">Export messages</string>
     <string name="export_sms">Export SMS</string>
@@ -147,98 +147,138 @@
 
     <string name="default_notification_channel_id">luzzy_notifications</string>
 
-    <string name="premium_title">Versión Premium</string>
-    <string name="premium_benefits_title">Beneficios Premium</string>
-    <string name="premium_benefit_1">Sin anuncios para siempre</string>
-    <string name="premium_benefit_2">Temas y personalización avanzada</string>
-    <string name="premium_benefit_3">Funciones exclusivas premium</string>
-    <string name="premium_benefit_4">Apoyo al desarrollo de la app</string>
-    <string name="upgrade_to_premium">Actualizar a Premium</string>
-    <string name="restore_purchases">Restaurar compras</string>
-    <string name="premium_status_active">Estado: Premium Activo ✓</string>
-    <string name="premium_status_inactive">Estado: Versión Gratuita</string>
-    <string name="already_premium">Ya tienes Premium</string>
-    <string name="premium_note">Pago único · Sin suscripciones · Funciona en todos tus dispositivos</string>
-    <string name="checking_purchases">Verificando compras…</string>
+    <string name="premium_title">Premium</string>
+    <string name="premium_benefits_title">Premium Benefits</string>
+    <string name="premium_benefit_1">No ads, forever</string>
+    <string name="premium_benefit_2">Themes and advanced customization</string>
+    <string name="premium_benefit_3">Exclusive premium features</string>
+    <string name="premium_benefit_4">Support the app\'s development</string>
+    <string name="upgrade_to_premium">Upgrade to Premium</string>
+    <string name="restore_purchases">Restore purchases</string>
+    <string name="recuperar_compra">Restore purchase</string>
+    <string name="estado_premium">Status</string>
+    <string name="premium_status_active">Premium Active ✓</string>
+    <string name="premium_status_inactive">Free Version</string>
+    <string name="already_premium">You already have Premium</string>
+    <string name="premium_note">One-time payment · No subscriptions · Works on all your devices</string>
+    <string name="subscription">Subscription</string>
+    <string name="checking_purchases">Checking purchases…</string>
 
-    <string name="login_title">Iniciar Sesión</string>
-    <string name="login_welcome">Bienvenido de nuevo</string>
-    <string name="login_subtitle">Inicia sesión para sincronizar tu cuenta premium en todos tus dispositivos</string>
-    <string name="login_button">Iniciar Sesión</string>
-    <string name="email">Correo Electrónico</string>
-    <string name="password">Contraseña</string>
-    <string name="no_account">¿No tienes cuenta?</string>
-    <string name="register_button">Registrarse</string>
-    <string name="continue_without_account">Continuar sin cuenta</string>
+    <string name="login_title">Sign In</string>
+    <string name="login_welcome">Welcome back</string>
+    <string name="login_subtitle">Sign in to sync your premium account across all your devices</string>
+    <string name="login_button">Sign In</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="no_account">Don\'t have an account?</string>
+    <string name="register_button">Sign Up</string>
+    <string name="continue_without_account">Continue without an account</string>
 
-    <string name="register_title">Crear Cuenta</string>
-    <string name="register_welcome">Crea tu cuenta</string>
-    <string name="register_subtitle">Regístrate para sincronizar tu cuenta premium en todos tus dispositivos</string>
-    <string name="name">Nombre</string>
-    <string name="confirm_password">Confirmar Contraseña</string>
-    <string name="have_account">¿Ya tienes cuenta?</string>
+    <string name="register_title">Create Account</string>
+    <string name="register_welcome">Create your account</string>
+    <string name="register_subtitle">Sign up to sync your premium account across all your devices</string>
+    <string name="name">Name</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="have_account">Already have an account?</string>
 
-    <string name="login_success">Sesión iniciada correctamente</string>
-    <string name="register_success">Cuenta creada exitosamente</string>
-    <string name="logout_success">Sesión cerrada</string>
-    <string name="error_empty_fields">Por favor completa todos los campos</string>
-    <string name="error_invalid_email">Correo electrónico inválido</string>
-    <string name="error_password_mismatch">Las contraseñas no coinciden</string>
-    <string name="error_password_short">La contraseña debe tener al menos 6 caracteres</string>
-    <string name="error_login_failed">Error al iniciar sesión. Verifica tus credenciales.</string>
-    <string name="error_register_failed">Error al crear la cuenta. El correo puede estar en uso.</string>
-    <string name="account">Cuenta</string>
-    <string name="logged_in_as">Sesión iniciada como: %s</string>
+    <string name="login_success">Signed in successfully</string>
+    <string name="register_success">Account created successfully</string>
+    <string name="logout_success">Signed out</string>
+    <string name="error_empty_fields">Please fill in all fields</string>
+    <string name="hint_name">Name (optional)</string>
+    <string name="error_invalid_email">Invalid email address</string>
+    <string name="error_password_mismatch">Passwords don\'t match</string>
+    <string name="error_password_short">Password must be at least 6 characters</string>
+    <string name="error_login_failed">Sign-in failed. Check your credentials.</string>
+    <string name="error_register_failed">Couldn\'t create the account. The email may already be in use.</string>
+    <string name="account">Account</string>
+    <string name="logged_in_as">Signed in as: %s</string>
 
-    <string name="user_settings_title">Configuración</string>
-    <string name="general_settings">Configuración General</string>
-    <string name="premium_settings">Configuración Premium</string>
-    <string name="unlock_premium_features">Desbloquea funciones premium</string>
-    <string name="premium_features_description">Accede a auto-respuesta, perfil profesional y más funciones exclusivas</string>
+    <string name="user_settings_title">Settings</string>
+    <string name="general_settings">General Settings</string>
+    <string name="premium_settings">Premium Settings</string>
+    <string name="unlock_premium_features">Unlock premium features</string>
+    <string name="premium_features_description">Get auto-reply, professional profile and more exclusive features</string>
 
-    <string name="nombre_usuario">Tu nombre</string>
-    <string name="nombre_usuario_helper">Ej: Valentina — el bot se presentará con este nombre</string>
-    <string name="tema_color">Color de Tema</string>
+    <string name="nombre_usuario">Your name</string>
+    <string name="nombre_usuario_helper">E.g. Valentina — the bot will introduce itself with this name</string>
+    <string name="tema_color">Theme Color</string>
 
-    <string name="auto_respuesta_activada">Auto-Respuesta</string>
-    <string name="auto_respuesta_desc">El bot responde automáticamente a los mensajes entrantes</string>
-    <string name="usar_emojis">Usar emojis</string>
-    <string name="usar_emojis_desc">El bot incluye emojis expresivos en sus respuestas</string>
+    <string name="auto_respuesta_activada">Auto-Reply</string>
+    <string name="auto_respuesta_desc">The bot replies automatically to incoming messages</string>
+    <string name="usar_emojis">Use emojis</string>
+    <string name="usar_emojis_desc">The bot includes expressive emojis in its replies</string>
 
-    <string name="perfil_profesional">Perfil Profesional</string>
-    <string name="mis_servicios">Mis servicios</string>
-    <string name="servicio_hint">Nombre del servicio</string>
-    <string name="precio_hint">Precio (ej: $50 o "A consultar")</string>
-    <string name="agregar_servicio">+ Agregar servicio</string>
-    <string name="mis_duraciones">Duraciones disponibles</string>
-    <string name="duracion_hint">Ej: 1 hora, 2 horas, 30 min</string>
-    <string name="agregar_duracion">+ Agregar duración</string>
-    <string name="lugar_trabajo">Lugar de trabajo</string>
-    <string name="lugar_trabajo_hint">Ej: A domicilio, hoteles cercanos, local en zona norte</string>
-    <string name="lugar_trabajo_required">El lugar de atención es obligatorio</string>
-    <string name="info_general">Información general</string>
-    <string name="info_general_hint">Ej: Disponible lunes a viernes de 10am a 8pm. Solo zona norte.</string>
-    <string name="adn_ia">ADN del bot</string>
-    <string name="adn_ia_hint">Ej: Soy cálida y directa. Llamo al cliente "amor". Cierro con gancho.</string>
+    <string name="perfil_profesional">Professional Profile</string>
+    <string name="mis_servicios">My services</string>
+    <string name="servicio_hint">Service name</string>
+    <string name="precio_hint">Price (e.g. $50 or \"Contact us\")</string>
+    <string name="agregar_servicio">+ Add service</string>
+    <string name="mis_duraciones">Available durations</string>
+    <string name="duracion_hint">E.g. 1 hour, 2 hours, 30 min</string>
+    <string name="agregar_duracion">+ Add duration</string>
+    <string name="lugar_trabajo">Work location</string>
+    <string name="lugar_trabajo_hint">E.g. House calls, nearby hotels, shop in the north area</string>
+    <string name="lugar_trabajo_required">Work location is required</string>
+    <string name="info_general">General information</string>
+    <string name="info_general_hint">E.g. Available Monday to Friday, 10am to 8pm. North area only.</string>
+    <string name="adn_ia">Bot personality</string>
+    <string name="adn_ia_hint">E.g. I\'m warm and direct. I call the client \"dear\". I close with a hook.</string>
 
-    <string name="danger_zone">Zona de peligro</string>
-    <string name="delete_account">Eliminar mi cuenta</string>
-    <string name="delete_account_desc">Borra permanentemente tu perfil, configuración, conversaciones y citas. Esta acción no se puede deshacer.</string>
-    <string name="delete_account_confirm_title">¿Eliminar tu cuenta?</string>
-    <string name="delete_account_confirm_msg">Se eliminarán todos tus datos del servidor. Los SMS en tu dispositivo no se ven afectados. Esta acción es irreversible.</string>
-    <string name="delete_account_success">Cuenta eliminada correctamente</string>
-    <string name="delete_account_error">Error al eliminar la cuenta</string>
+    <string name="danger_zone">Danger zone</string>
+    <string name="delete_account">Delete my account</string>
+    <string name="delete_account_desc">Permanently deletes your profile, settings, conversations and appointments. This action can\'t be undone.</string>
+    <string name="delete_account_confirm_title">Delete your account?</string>
+    <string name="delete_account_confirm_msg">All your data on the server will be deleted. SMS on your device are not affected. This action is irreversible.</string>
+    <string name="delete_account_success">Account deleted successfully</string>
+    <string name="delete_account_error">Error deleting the account</string>
 
-    <string name="notificaciones_silenciosas">Notificaciones Silenciosas</string>
-    <string name="notificaciones_silenciosas_desc">Desactivar sonidos de notificación</string>
-    <string name="modo_oscuro">Modo Oscuro</string>
-    <string name="modo_oscuro_desc">Usar tema oscuro en toda la aplicación</string>
+    <string name="notificaciones_silenciosas">Disable notifications</string>
+    <string name="notificaciones_silenciosas_desc">You won\'t get alerts on your phone. The bot will keep replying normally.</string>
+    <string name="modo_oscuro">Dark Mode</string>
+    <string name="modo_oscuro_desc">Use a dark theme across the whole app</string>
 
-    <string name="save_settings">Guardar Configuración</string>
-    <string name="settings_saved">Configuración guardada exitosamente</string>
-    <string name="error_loading_settings">Error al cargar la configuración</string>
-    <string name="error_saving_settings">Error al guardar la configuración</string>
-    <string name="login_required">Debes iniciar sesión para acceder a esta función</string>
+    <string name="integraciones">Integrations</string>
+    <string name="google_calendar">Google Calendar</string>
+    <string name="calendar_not_connected">Not connected</string>
+    <string name="calendar_connected">Connected</string>
+    <string name="calendar_connect">Connect</string>
+    <string name="calendar_disconnect">Disconnect</string>
+    <string name="calendar_disconnect_error">Error disconnecting</string>
+
+    <string name="save_settings">Save Settings</string>
+    <string name="settings_saved">Settings saved successfully</string>
+    <string name="error_loading_settings">Error loading settings</string>
+    <string name="error_saving_settings">Error saving settings</string>
+    <string name="login_required">You must sign in to use this feature</string>
+
+    <!-- Web access -->
+    <string name="acceso_web">Web access</string>
+    <string name="email_label">Email</string>
+    <string name="email_hint">you@example.com</string>
+    <string name="password_label">Password</string>
+    <string name="password_hint">At least 6 characters</string>
+    <string name="password_hint_existente">Leave empty to keep it unchanged</string>
+    <string name="acceso_web_leyenda">If you want to use the WhatsApp bot, fill in these fields and sign in at luzzy.app</string>
+    <string name="credentials_saved">Web credentials saved</string>
+    <string name="credentials_error">Error saving credentials</string>
+    <string name="credentials_email_invalido">Enter a valid email</string>
+    <string name="credentials_password_corta">Password must be at least 6 characters</string>
+    <string name="credentials_email_en_uso">That email is already in use</string>
+
+    <!-- Phone Auth -->
+    <string name="phone_auth_title">Enter your number</string>
+    <string name="phone_auth_subtitle">We\'ll send you an SMS code to verify your identity</string>
+    <string name="phone_auth_code_title">Enter the code</string>
+    <string name="phone_auth_code_subtitle">Code sent to %s</string>
+    <string name="phone_auth_account_not_found">Number not registered. Purchase Premium from the app first.</string>
+    <string name="phone_hint">+1 555 000 0000</string>
+    <string name="code_hint">6-digit code</string>
+    <string name="send_code">Send code</string>
+    <string name="verify_code">Verify</string>
+    <string name="enter_phone_number">Enter your phone number</string>
+    <string name="enter_verification_code">Enter the code you received</string>
+    <string name="error_connection">Connection error. Try again.</string>
 
     <!-- Google Login -->
     <string name="google_login_title">Sign in with Google</string>
@@ -282,20 +322,20 @@
     <!-- Auto Response Mode -->
     <string name="auto_response">Auto Response</string>
     <string name="draft_mode">Draft mode</string>
-    <string name="draft_mode_description">Cuando este modo está activo, la IA genera una respuesta pero NO la envía automáticamente.\n\nEn su lugar, recibirás una notificación en tu celular. Al tocarla, WhatsApp se abre con la respuesta ya escrita en el campo de texto — solo tienes que revisarla y tocar Enviar.\n\nIdeal para contactos que prefieren tu toque personal.</string>
+    <string name="draft_mode_description">When this mode is on, the AI generates a reply but does NOT send it automatically.\n\nInstead, you\'ll get a notification on your phone. Tapping it opens WhatsApp with the reply already typed in the text field — you just review it and tap Send.\n\nIdeal for contacts who prefer your personal touch.</string>
     <string name="send_mode_description">Auto responses will be sent directly without confirmation</string>
 
     <!-- Prominent Disclosure (Google Play User Data policy) -->
-    <string name="prominent_disclosure_title">Aviso de privacidad</string>
-    <string name="prominent_disclosure_message">Luzzy recopila y transmite tu número de teléfono y los contactos de tu dispositivo para habilitar el envío y recepción de mensajes SMS entre usuarios. Esta información es enviada a nuestros servidores únicamente con este propósito y no se comparte con terceros.</string>
-    <string name="prominent_disclosure_accept">Acepto</string>
-    <string name="prominent_disclosure_decline">No acepto</string>
+    <string name="prominent_disclosure_title">Privacy notice</string>
+    <string name="prominent_disclosure_message">Luzzy collects and transmits your phone number and the contacts on your device to enable sending and receiving SMS messages between users. This information is sent to our servers solely for this purpose and is not shared with third parties.</string>
+    <string name="prominent_disclosure_accept">I accept</string>
+    <string name="prominent_disclosure_decline">I don\'t accept</string>
 
     <!-- Permission Rationale Dialogs (Google Play compliance) -->
-    <string name="sms_permission_rationale_title">Luzzy necesita acceso</string>
-    <string name="sms_permission_rationale_message">Para funcionar como tu app de mensajería, Luzzy necesita:\n\n• Leer y enviar SMS — para gestionar tus mensajes de texto\n• Leer contactos — para mostrar los nombres en tus conversaciones\n\nEstos permisos se usan únicamente para la mensajería SMS y nunca se comparten con terceros.</string>
-    <string name="default_sms_rationale_title">App SMS predeterminada</string>
-    <string name="default_sms_rationale_message">Para enviar y recibir mensajes SMS, Luzzy necesita ser tu app de mensajería predeterminada.\n\nEsto le permite a Luzzy:\n• Recibir SMS entrantes\n• Enviar mensajes en tu nombre\n• Mostrarte notificaciones de nuevos mensajes\n\nPuedes cambiarlo en cualquier momento desde los ajustes del dispositivo.</string>
-    <string name="continue_btn">Continuar</string>
-    <string name="exit_app">Salir</string>
+    <string name="sms_permission_rationale_title">Luzzy needs access</string>
+    <string name="sms_permission_rationale_message">To work as your messaging app, Luzzy needs:\n\n• Read and send SMS — to manage your text messages\n• Read contacts — to show names in your conversations\n\nThese permissions are used solely for SMS messaging and are never shared with third parties.</string>
+    <string name="default_sms_rationale_title">Default SMS app</string>
+    <string name="default_sms_rationale_message">To send and receive SMS messages, Luzzy needs to be your default messaging app.\n\nThis lets Luzzy:\n• Receive incoming SMS\n• Send messages on your behalf\n• Show you notifications for new messages\n\nYou can change this at any time in your device settings.</string>
+    <string name="continue_btn">Continue</string>
+    <string name="exit_app">Exit</string>
 </resources>

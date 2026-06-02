@@ -7,6 +7,9 @@
     <!-- Swipe actions — brand primary instead of default purple -->
     <color name="swipe_purple">#FFD25140</color>
 
+    <!-- Overrides goodwy-commons text color: grey_800 (#424242) → grey_900 (#212121) -->
+    <color name="theme_light_text_color">#212121</color>
+
     <!-- ── Luzzy brand palette ───────────────────────────────────── -->
     <!-- Overrides goodwy-commons defaults (was blue #5589F1 / mint #09F4A1) -->
     <color name="primary">#FFD25140</color>

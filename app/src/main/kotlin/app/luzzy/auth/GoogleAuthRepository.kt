@@ -111,6 +111,7 @@ class GoogleAuthRepository(private val context: Context) {
             clearAuthData()
 
             SharedPrefsManager.saveAuthToken(context, "")
+            SharedPrefsManager.clearGoogleAuthToken(context)
 
             Log.d(TAG, "Logout exitoso")
             true
@@ -119,6 +120,7 @@ class GoogleAuthRepository(private val context: Context) {
 
             clearAuthData()
             SharedPrefsManager.saveAuthToken(context, "")
+            SharedPrefsManager.clearGoogleAuthToken(context)
             false
         }
     }

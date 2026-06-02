@@ -72,8 +72,6 @@ class SettingsActivity : SimpleActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-        setupOptionsMenu()
-
         setupEdgeToEdge(padBottomImeAndSystem = listOf(binding.settingsNestedScrollview))
         setupMaterialScrollListener(
             scrollingView = binding.settingsNestedScrollview,
@@ -98,8 +96,6 @@ class SettingsActivity : SimpleActivity() {
     override fun onResume() {
         super.onResume()
         setupTopAppBar(binding.settingsAppbar, NavigationIcon.Arrow)
-
-        setupPurchaseThankYou()
 
         setupCustomizeColors()
         setupOverflowIcon()
@@ -239,11 +235,6 @@ class SettingsActivity : SimpleActivity() {
     override fun onPause() {
         super.onPause()
         blockedNumbersAtPause = getBlockedNumbers().hashCode()
-    }
-
-    private fun setupPurchaseThankYou() = binding.apply {
-        settingsPurchaseThankYouHolder.beGoneIf(isPro())
-        settingsPurchaseThankYouHolder.onClick = { launchPurchase() }
     }
 
     private fun setupCustomizeColors() = binding.apply {
@@ -1213,8 +1204,6 @@ class SettingsActivity : SimpleActivity() {
 
     private fun updatePro(isPro: Boolean = isPro()) {
         binding.apply {
-            settingsPurchaseThankYouHolder.beGoneIf(isPro)
-
             val stringId =
                 if (isRTLLayout) com.goodwy.strings.R.string.swipe_right_action
                 else com.goodwy.strings.R.string.swipe_left_action
@@ -1228,15 +1217,4 @@ class SettingsActivity : SimpleActivity() {
         return super.onCreateOptionsMenu(menu)
     }
 
-    private fun setupOptionsMenu() {
-        binding.settingsToolbar.setOnMenuItemClickListener { menuItem ->
-            when (menuItem.itemId) {
-                R.id.whats_new -> {
-                    WhatsNewDialog(this@SettingsActivity, whatsNewList())
-                    true
-                }
-                else -> false
-            }
-        }
-    }
 }

@@ -15,6 +15,7 @@ import app.luzzy.helpers.ContactSendModeRepository
 import app.luzzy.helpers.DraftManager
 import app.luzzy.helpers.SmsSender
 import app.luzzy.models.SendMode
+import app.luzzy.utils.SharedPrefsManager
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 
@@ -93,7 +94,11 @@ class FCMService : FirebaseMessagingService() {
             val from    = data["sender"]  ?: return
             val message = data["message"] ?: return
             Log.d(TAG, "📩 WA_DRAFT de $from: ${message.take(30)}")
-            showWADraftNotification(from, message)
+            if (!SharedPrefsManager.areNotificationsDisabled(applicationContext)) {
+                showWADraftNotification(from, message)
+            } else {
+                Log.d(TAG, "🔕 Notificaciones desactivadas — WA_DRAFT suprimido para $from")
+            }
             return
         }
 
@@ -133,7 +138,11 @@ class FCMService : FirebaseMessagingService() {
             }
             SendMode.DRAFT -> {
                 Log.d(TAG, "📝 Modo BORRADOR activado → Mostrando notificación")
-                saveDraftAndNotify(recipient, message)
+                if (!SharedPrefsManager.areNotificationsDisabled(applicationContext)) {
+                    saveDraftAndNotify(recipient, message)
+                } else {
+                    Log.d(TAG, "🔕 Notificaciones desactivadas — borrador suprimido para $recipient")
+                }
             }
         }
     }

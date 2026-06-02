@@ -35,12 +35,6 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <com.goodwy.commons.views.PurchaseThankYouItem
-                android:id="@+id/settingsPurchaseThankYouHolder"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/medium_margin"/>
-
             <TextView
                 android:id="@+id/settings_appearance_label"
                 style="@style/SettingsSectionLabelStyle"

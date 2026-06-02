@@ -24,6 +24,7 @@ class BillingManager(
     var onPremiumStatusChanged: ((Boolean) -> Unit)? = null
     var onPurchaseError: ((String) -> Unit)? = null
     var onProductPriceLoaded: ((String) -> Unit)? = null
+    var onPurchaseSucceeded: ((purchaseToken: String) -> Unit)? = null
 
     fun initialize() {
         Log.d(TAG, "🔧 Inicializando BillingClient...")
@@ -208,6 +209,7 @@ class BillingManager(
                             Log.d(TAG, "✓ Compra ya reconocida anteriormente")
                             premiumRepository.setPremium(true, purchase.purchaseToken)
                             onPremiumStatusChanged?.invoke(true)
+                            onPurchaseSucceeded?.invoke(purchase.purchaseToken)
                         }
                     }
                     Purchase.PurchaseState.PENDING -> {
@@ -240,6 +242,7 @@ class BillingManager(
                         Log.d(TAG, "✓ Compra reconocida exitosamente")
                         premiumRepository.setPremium(true, purchase.purchaseToken)
                         onPremiumStatusChanged?.invoke(true)
+                        onPurchaseSucceeded?.invoke(purchase.purchaseToken)
                     } else {
                         Log.e(TAG, "✗ Error al reconocer compra: ${result?.debugMessage}")
                         onPurchaseError?.invoke("Error al procesar compra")
