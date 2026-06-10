@@ -1,13 +1,8 @@
 package app.luzzy.sms
 
-import android.app.NotificationChannel
-import android.app.NotificationManager
 import android.content.Context
-import android.os.Build
 import android.util.Log
-import androidx.core.app.NotificationCompat
 import androidx.work.*
-import app.luzzy.R
 import app.luzzy.network.RetrofitClient
 import app.luzzy.network.models.SendMessagesRequest
 import app.luzzy.network.models.Message
@@ -26,8 +21,6 @@ class SmsUploadWorker(
         private const val TAG = "SmsUploadWorker"
         private const val WORK_NAME = "sms_upload_work"
         private const val MAX_RETRIES = 5
-        private const val CHANNEL_ID = "sms_upload_failures"
-        private const val NOTIFICATION_ID = 1001
 
         private const val INPUT_SMS_ID = "sms_id"
         private const val INPUT_FROM = "from"
@@ -192,38 +185,6 @@ class SmsUploadWorker(
     private fun handleFailure(timestamp: Long, from: String) {
         val smsRepository = SmsRepository(applicationContext)
         smsRepository.markAsUnread(timestamp)
-
-        showFailureNotification(from)
-
-        Log.d(TAG, "SMS con timestamp $timestamp marcado como no leído y notificación mostrada")
-    }
-
-    private fun showFailureNotification(from: String) {
-        createNotificationChannel()
-
-        val notification = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_messages)
-            .setContentTitle(applicationContext.getString(R.string.sms_upload_failed_title))
-            .setContentText(applicationContext.getString(R.string.sms_upload_failed_body, from))
-            .setPriority(NotificationCompat.PRIORITY_HIGH)
-            .setAutoCancel(true)
-            .build()
-
-        val notificationManager = applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        notificationManager.notify(NOTIFICATION_ID, notification)
-    }
-
-    private fun createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name = applicationContext.getString(R.string.sms_upload_channel_name)
-            val descriptionText = applicationContext.getString(R.string.sms_upload_channel_description)
-            val importance = NotificationManager.IMPORTANCE_HIGH
-            val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
-                description = descriptionText
-            }
-
-            val notificationManager = applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.createNotificationChannel(channel)
-        }
+        Log.d(TAG, "SMS con timestamp $timestamp marcado como no leído (fallo silencioso)")
     }
 }

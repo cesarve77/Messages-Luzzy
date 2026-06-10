@@ -17,6 +17,7 @@
     <uses-permission android:name="android.permission.CALL_PHONE" />
 
     <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.WRITE_CONTACTS" />
     <uses-permission
         android:name="android.permission.USE_BIOMETRIC"
         tools:node="remove" />
@@ -82,8 +83,22 @@
             android:name=".activities.GoogleLoginActivity"
             android:configChanges="orientation"
             android:exported="false"
-            android:label="@string/google_login_title"
+            android:label="@string/login_title"
             android:parentActivityName=".activities.MainActivity" />
+
+        <activity
+            android:name=".activities.RegisterActivity"
+            android:configChanges="orientation"
+            android:exported="false"
+            android:label="@string/register_title"
+            android:parentActivityName=".activities.GoogleLoginActivity" />
+
+        <activity
+            android:name=".activities.PhoneAuthActivity"
+            android:configChanges="orientation"
+            android:exported="false"
+            android:label="@string/login_title"
+            android:parentActivityName=".activities.PremiumActivity" />
 
         <activity
             android:name=".activities.VideoPlayerActivity"
@@ -123,6 +138,7 @@
 
             <intent-filter>
                 <action android:name="android.intent.action.SENDTO" />
+                <action android:name="android.intent.action.SEND" />
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -262,7 +278,13 @@
         <receiver
             android:name=".receivers.MmsReceiver"
             android:exported="true"
-            android:taskAffinity="com.klinker.android.messaging.MMS_RECEIVED" />
+            android:permission="android.permission.BROADCAST_WAP_PUSH"
+            android:taskAffinity="com.klinker.android.messaging.MMS_RECEIVED">
+            <intent-filter>
+                <action android:name="android.provider.Telephony.WAP_PUSH_DELIVER" />
+                <data android:mimeType="application/vnd.wap.mms-message" />
+            </intent-filter>
+        </receiver>
 
         <receiver
             android:name=".receivers.MarkAsReadReceiver"
@@ -502,6 +524,11 @@
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
             android:value="@string/default_notification_channel_id" />
+
+        <!-- Luzzy brand color for FCM notification icon -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/luzzy_primary" />
 
     </application>
 </manifest>

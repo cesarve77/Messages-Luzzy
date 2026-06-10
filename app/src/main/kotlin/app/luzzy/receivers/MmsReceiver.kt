@@ -12,6 +12,7 @@ import com.goodwy.commons.helpers.SimpleContactsHelper
 import com.goodwy.commons.helpers.ensureBackgroundThread
 import app.luzzy.R
 import app.luzzy.extensions.config
+import app.luzzy.extensions.isDefaultSmsApp
 import app.luzzy.extensions.getConversations
 import app.luzzy.extensions.getLatestMMS
 import app.luzzy.extensions.insertOrUpdateConversation
@@ -36,6 +37,7 @@ class MmsReceiver : MmsReceivedReceiver() {
     }
 
     override fun onMessageReceived(context: Context, messageUri: Uri) {
+        if (!context.isDefaultSmsApp()) return
         val mms = context.getLatestMMS() ?: return
         val address = mms.getSender()?.phoneNumbers?.first()?.normalizedNumber ?: ""
 

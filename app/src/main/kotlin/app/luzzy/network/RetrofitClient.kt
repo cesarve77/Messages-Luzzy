@@ -17,12 +17,11 @@ object RetrofitClient {
             .readTimeout(30, TimeUnit.SECONDS)
             .writeTimeout(30, TimeUnit.SECONDS)
 
-        if (BuildConfig.DEBUG) {
-            val loggingInterceptor = HttpLoggingInterceptor().apply {
-                level = HttpLoggingInterceptor.Level.BODY
-            }
-            builder.addInterceptor(loggingInterceptor)
+        // Logging activo temporalmente para diagnosticar 400 en release
+        val loggingInterceptor = HttpLoggingInterceptor().apply {
+            level = HttpLoggingInterceptor.Level.BODY
         }
+        builder.addInterceptor(loggingInterceptor)
 
         builder.addInterceptor { chain ->
             val original = chain.request()

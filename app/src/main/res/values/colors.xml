@@ -1,6 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Phone call UI -->
     <color name="green_call">#FF67CE67</color>
     <color name="red_call">#FFEB5545</color>
-    <color name="swipe_purple">#FF5E5CE6</color>
+
+    <!-- Swipe actions — brand primary instead of default purple -->
+    <color name="swipe_purple">#FFD25140</color>
+
+    <!-- Overrides goodwy-commons text color: grey_800 (#424242) → grey_900 (#212121) -->
+    <color name="theme_light_text_color">#212121</color>
+
+    <!-- ── Luzzy brand palette ───────────────────────────────────── -->
+    <!-- Overrides goodwy-commons defaults (was blue #5589F1 / mint #09F4A1) -->
+    <color name="primary">#FFD25140</color>
+    <color name="color_primary">#FFD25140</color>
+    <color name="color_primary_dark">#FFA92A00</color>
+    <color name="color_accent">#FF605A8C</color>
+
+    <!-- Full palette for direct use -->
+    <color name="luzzy_primary">#FFD25140</color>
+    <color name="luzzy_primary_dark">#FFA92A00</color>
+    <color name="luzzy_grad_end">#FFDA462A</color>
+    <color name="luzzy_bg_dark">#FF302C44</color>
+    <color name="luzzy_purple">#FF605A8C</color>
+    <color name="luzzy_purple_light">#FF8473AB</color>
+    <color name="luzzy_page_bg">#FFF0EFF5</color>
 </resources>

@@ -72,8 +72,6 @@ class SettingsActivity : SimpleActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-        setupOptionsMenu()
-
         setupEdgeToEdge(padBottomImeAndSystem = listOf(binding.settingsNestedScrollview))
         setupMaterialScrollListener(
             scrollingView = binding.settingsNestedScrollview,
@@ -98,8 +96,6 @@ class SettingsActivity : SimpleActivity() {
     override fun onResume() {
         super.onResume()
         setupTopAppBar(binding.settingsAppbar, NavigationIcon.Arrow)
-
-        setupPurchaseThankYou()
 
         setupCustomizeColors()
         setupOverflowIcon()
@@ -166,8 +162,6 @@ class SettingsActivity : SimpleActivity() {
         setupMessagesExport()
         setupMessagesImport()
 
-        setupTipJar()
-        setupAbout()
         updateTextColors(binding.settingsNestedScrollview)
 
         if (blockedNumbersAtPause != -1 && blockedNumbersAtPause != getBlockedNumbers().hashCode()) {
@@ -187,8 +181,7 @@ class SettingsActivity : SimpleActivity() {
                 settingsArchivedMessagesLabel,
                 settingsRecycleBinLabel,
                 settingsSecurityLabel,
-                settingsBackupsLabel,
-                settingsOtherLabel
+                settingsBackupsLabel
             ).forEach {
                 it.setTextColor(properPrimaryColor)
             }
@@ -205,8 +198,7 @@ class SettingsActivity : SimpleActivity() {
                 settingsRecycleBinHolder,
                 settingsArchivedMessagesHolder,
                 settingsSecurityHolder,
-                settingsBackupsHolder,
-                settingsOtherHolder
+                settingsBackupsHolder
             ).forEach {
                 it.setCardBackgroundColor(surfaceColor)
             }
@@ -219,8 +211,7 @@ class SettingsActivity : SimpleActivity() {
                 settingsCustomizeNotificationsChevron,
                 settingsImportMessagesChevron,
                 settingsExportMessagesChevron,
-                settingsTipJarChevron,
-                settingsAboutChevron
+                settingsImportMessagesChevron
             ).forEach {
                 it.applyColorFilter(properTextColor)
             }
@@ -244,11 +235,6 @@ class SettingsActivity : SimpleActivity() {
     override fun onPause() {
         super.onPause()
         blockedNumbersAtPause = getBlockedNumbers().hashCode()
-    }
-
-    private fun setupPurchaseThankYou() = binding.apply {
-        settingsPurchaseThankYouHolder.beGoneIf(isPro())
-        settingsPurchaseThankYouHolder.onClick = { launchPurchase() }
     }
 
     private fun setupCustomizeColors() = binding.apply {
@@ -1216,29 +1202,8 @@ class SettingsActivity : SimpleActivity() {
 
     private fun hasColorChanged(old: Int, new: Int) = abs(old - new) > 1
 
-    private fun setupTipJar() = binding.apply {
-        settingsTipJarHolder.apply {
-            beVisibleIf(isPro())
-            background.applyColorFilter(getColoredMaterialStatusBarColor())
-            setOnClickListener {
-                launchPurchase()
-            }
-        }
-    }
-
-    @SuppressLint("SetTextI18n")
-    private fun setupAbout() = binding.apply {
-        settingsAboutVersion.text = "Version: " + BuildConfig.VERSION_NAME
-        settingsAboutHolder.setOnClickListener {
-            launchAbout()
-        }
-    }
-
     private fun updatePro(isPro: Boolean = isPro()) {
         binding.apply {
-            settingsPurchaseThankYouHolder.beGoneIf(isPro)
-            settingsTipJarHolder.beVisibleIf(isPro)
-
             val stringId =
                 if (isRTLLayout) com.goodwy.strings.R.string.swipe_right_action
                 else com.goodwy.strings.R.string.swipe_left_action
@@ -1252,15 +1217,4 @@ class SettingsActivity : SimpleActivity() {
         return super.onCreateOptionsMenu(menu)
     }
 
-    private fun setupOptionsMenu() {
-        binding.settingsToolbar.setOnMenuItemClickListener { menuItem ->
-            when (menuItem.itemId) {
-                R.id.whats_new -> {
-                    WhatsNewDialog(this@SettingsActivity, whatsNewList())
-                    true
-                }
-                else -> false
-            }
-        }
-    }
 }

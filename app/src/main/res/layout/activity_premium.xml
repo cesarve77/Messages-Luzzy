@@ -4,10 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/coordinator_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="?android:attr/colorBackground">
+    android:layout_height="match_parent">
 
-    <com.google.android.material.appbar.AppBarLayout
+    <com.goodwy.commons.views.MyAppBarLayout
         android:id="@+id/appbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -17,267 +16,269 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             app:title="@string/premium_title"
+            app:titleTextAppearance="@style/AppTheme.ActionBar.TitleTextStyle"
             app:navigationIcon="@drawable/ic_arrow_left_vector" />
 
-    </com.google.android.material.appbar.AppBarLayout>
+    </com.goodwy.commons.views.MyAppBarLayout>
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/nested_scroll_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:paddingHorizontal="@dimen/activity_padding_left_right"
+        android:fillViewport="true"
+        android:scrollbars="none"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="24dp">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/premium_status_card"
+            <!-- ══════════ CONTENIDO PREMIUM ══════════ -->
+            <LinearLayout
+                android:id="@+id/logged_in_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="2dp">
+                android:orientation="vertical">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp">
+                <!-- CUENTA -->
+                <TextView
+                    style="@style/SettingsSectionLabelStyle"
+                    android:layout_marginTop="12dp"
+                    android:tag="brand_text"
+                    android:text="@string/account"
+                    tools:textColor="@color/primary" />
 
-                    <TextView
-                        android:id="@+id/premium_status_text"
+                <androidx.cardview.widget.CardView
+                    style="@style/SettingsSectionHolder"
+                    app:cardCornerRadius="@dimen/activity_margin"
+                    app:cardElevation="0dp">
+
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:textColor="?android:attr/textColorPrimary"
-                        tools:text="Estado: Premium Activo" />
+                        android:orientation="vertical">
 
-                </LinearLayout>
+                        <!-- Estado premium -->
+                        <RelativeLayout
+                            style="@style/SettingsHolderSwitchStyle">
 
-            </androidx.cardview.widget.CardView>
+                            <com.goodwy.commons.views.MyTextView
+                                style="@style/SettingsTextLabelStyle"
+                                android:layout_alignParentStart="true"
+                                android:layout_centerVertical="true"
+                                android:layout_toStartOf="@+id/premium_status_text"
+                                android:layout_marginEnd="@dimen/normal_margin"
+                                android:text="@string/estado_premium" />
 
-            <LinearLayout
-                android:id="@+id/account_info_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginBottom="24dp"
-                android:visibility="gone"
-                tools:visibility="visible">
+                            <com.goodwy.commons.views.MyTextView
+                                android:id="@+id/premium_status_text"
+                                style="@style/SettingsTextValueStyle"
+                                android:layout_alignParentEnd="true"
+                                android:layout_centerVertical="true"
+                                android:layout_marginEnd="@dimen/settings_margin"
+                                android:alpha="1.0"
+                                tools:text="Activo" />
+                        </RelativeLayout>
 
+                        <!-- Cuenta logueada (email) -->
+                        <LinearLayout
+                            android:id="@+id/account_info_layout"
+                            style="@style/SettingsHolderSwitchStyle"
+                            android:orientation="vertical">
+
+                            <com.goodwy.commons.views.MyTextView
+                                style="@style/SettingsTextLabelStyle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/account" />
+
+                            <com.goodwy.commons.views.MyTextView
+                                android:id="@+id/account_email"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:alpha="0.85"
+                                android:textSize="@dimen/smaller_text_size"
+                                tools:text="user@example.com" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <!-- BENEFICIOS PREMIUM -->
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:text="@string/account"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:textColor="?android:attr/textColorPrimary" />
+                    style="@style/SettingsSectionLabelStyle"
+                    android:tag="brand_text"
+                    android:text="@string/premium_benefits_title"
+                    tools:textColor="@color/primary" />
 
+                <androidx.cardview.widget.CardView
+                    style="@style/SettingsSectionHolder"
+                    app:cardCornerRadius="@dimen/activity_margin"
+                    app:cardElevation="0dp">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <RelativeLayout style="@style/SettingsHolderStyle">
+                            <com.goodwy.commons.views.MyTextView
+                                android:id="@+id/benefit_icon_1"
+                                style="@style/SettingsTextLabelStyle"
+                                android:layout_alignParentStart="true"
+                                android:layout_centerVertical="true"
+                                android:text="✓"
+                                android:tag="brand_text"
+                                android:textColor="?attr/colorPrimary"
+                                android:layout_marginEnd="@dimen/small_margin" />
+                            <com.goodwy.commons.views.MyTextView
+                                style="@style/SettingsTextLabelStyle"
+                                android:layout_centerVertical="true"
+                                android:layout_toEndOf="@+id/benefit_icon_1"
+                                android:text="@string/premium_benefit_1" />
+                        </RelativeLayout>
+
+                        <RelativeLayout style="@style/SettingsHolderStyle">
+                            <com.goodwy.commons.views.MyTextView
+                                android:id="@+id/benefit_icon_2"
+                                style="@style/SettingsTextLabelStyle"
+                                android:layout_alignParentStart="true"
+                                android:layout_centerVertical="true"
+                                android:text="✓"
+                                android:tag="brand_text"
+                                android:textColor="?attr/colorPrimary"
+                                android:layout_marginEnd="@dimen/small_margin" />
+                            <com.goodwy.commons.views.MyTextView
+                                style="@style/SettingsTextLabelStyle"
+                                android:layout_centerVertical="true"
+                                android:layout_toEndOf="@+id/benefit_icon_2"
+                                android:text="@string/premium_benefit_2" />
+                        </RelativeLayout>
+
+                        <RelativeLayout style="@style/SettingsHolderStyle">
+                            <com.goodwy.commons.views.MyTextView
+                                android:id="@+id/benefit_icon_3"
+                                style="@style/SettingsTextLabelStyle"
+                                android:layout_alignParentStart="true"
+                                android:layout_centerVertical="true"
+                                android:text="✓"
+                                android:tag="brand_text"
+                                android:textColor="?attr/colorPrimary"
+                                android:layout_marginEnd="@dimen/small_margin" />
+                            <com.goodwy.commons.views.MyTextView
+                                style="@style/SettingsTextLabelStyle"
+                                android:layout_centerVertical="true"
+                                android:layout_toEndOf="@+id/benefit_icon_3"
+                                android:text="@string/premium_benefit_3" />
+                        </RelativeLayout>
+
+                        <RelativeLayout style="@style/SettingsHolderStyle">
+                            <com.goodwy.commons.views.MyTextView
+                                android:id="@+id/benefit_icon_4"
+                                style="@style/SettingsTextLabelStyle"
+                                android:layout_alignParentStart="true"
+                                android:layout_centerVertical="true"
+                                android:text="✓"
+                                android:tag="brand_text"
+                                android:textColor="?attr/colorPrimary"
+                                android:layout_marginEnd="@dimen/small_margin" />
+                            <com.goodwy.commons.views.MyTextView
+                                style="@style/SettingsTextLabelStyle"
+                                android:layout_centerVertical="true"
+                                android:layout_toEndOf="@+id/benefit_icon_4"
+                                android:text="@string/premium_benefit_4" />
+                        </RelativeLayout>
+
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <!-- SUSCRIPCIÓN -->
                 <TextView
-                    android:id="@+id/account_email"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
-                    android:textSize="14sp"
-                    android:textColor="?android:attr/textColorSecondary"
-                    android:alpha="0.7"
-                    tools:text="user@example.com" />
+                    style="@style/SettingsSectionLabelStyle"
+                    android:tag="brand_text"
+                    android:text="@string/subscription"
+                    tools:textColor="@color/primary" />
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/logout_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/logout"
-                    style="@style/Widget.Material3.Button.TextButton" />
+                <androidx.cardview.widget.CardView
+                    style="@style/SettingsSectionHolder"
+                    app:cardCornerRadius="@dimen/activity_margin"
+                    app:cardElevation="0dp">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <!-- Precio -->
+                        <RelativeLayout style="@style/SettingsHolderSwitchStyle">
+                            <com.goodwy.commons.views.MyTextView
+                                style="@style/SettingsTextLabelStyle"
+                                android:layout_alignParentStart="true"
+                                android:layout_centerVertical="true"
+                                android:layout_toStartOf="@+id/premium_price_text"
+                                android:layout_marginEnd="@dimen/normal_margin"
+                                android:text="@string/subscription" />
+                            <com.goodwy.commons.views.MyTextView
+                                android:id="@+id/premium_price_text"
+                                style="@style/SettingsTextValueStyle"
+                                android:layout_alignParentEnd="true"
+                                android:layout_centerVertical="true"
+                                android:layout_marginEnd="@dimen/settings_margin"
+                                android:tag="brand_text"
+                                android:textColor="?attr/colorPrimary"
+                                android:textStyle="bold"
+                                android:alpha="1.0"
+                                tools:text="$4.99 / mes" />
+                        </RelativeLayout>
+
+                        <!-- Suscribirse -->
+                        <RelativeLayout style="@style/SettingsHolderSwitchStyle">
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/purchase_button"
+                                android:layout_width="match_parent"
+                                android:layout_height="56dp"
+                                android:tag="brand_fill"
+                                android:text="@string/upgrade_to_premium"
+                                android:textSize="16sp"
+                                app:cornerRadius="8dp" />
+                        </RelativeLayout>
+
+                        <!-- Restaurar -->
+                        <RelativeLayout style="@style/SettingsHolderSwitchStyle">
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/restore_purchases_button"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:tag="brand_text"
+                                android:text="@string/recuperar_compra"
+                                style="@style/Widget.Material3.Button.OutlinedButton"
+                                app:cornerRadius="8dp" />
+                        </RelativeLayout>
+
+                        <!-- Nota -->
+                        <RelativeLayout style="@style/SettingsHolderSwitchStyle">
+                            <com.goodwy.commons.views.MyTextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
+                                android:gravity="center"
+                                android:text="@string/premium_note"
+                                android:alpha="0.8"
+                                android:textSize="@dimen/smaller_text_size" />
+                        </RelativeLayout>
+
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <android.view.View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/big_margin" />
 
             </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/login_prompt_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginBottom="24dp"
-                android:visibility="visible">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:text="@string/account"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:textColor="?android:attr/textColorPrimary" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
-                    android:text="@string/login_subtitle"
-                    android:textSize="14sp"
-                    android:textColor="?android:attr/textColorSecondary"
-                    android:alpha="0.7" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/login_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/login_button" />
-
-            </LinearLayout>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:text="@string/premium_benefits_title"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:textColor="?android:attr/textColorPrimary" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="✓"
-                    android:textSize="20sp"
-                    android:textColor="?attr/colorPrimary"
-                    android:layout_marginEnd="12dp" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/premium_benefit_1"
-                    android:textSize="16sp"
-                    android:textColor="?android:attr/textColorPrimary" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="✓"
-                    android:textSize="20sp"
-                    android:textColor="?attr/colorPrimary"
-                    android:layout_marginEnd="12dp" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/premium_benefit_2"
-                    android:textSize="16sp"
-                    android:textColor="?android:attr/textColorPrimary" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="✓"
-                    android:textSize="20sp"
-                    android:textColor="?attr/colorPrimary"
-                    android:layout_marginEnd="12dp" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/premium_benefit_3"
-                    android:textSize="16sp"
-                    android:textColor="?android:attr/textColorPrimary" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="✓"
-                    android:textSize="20sp"
-                    android:textColor="?attr/colorPrimary"
-                    android:layout_marginEnd="12dp" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/premium_benefit_4"
-                    android:textSize="16sp"
-                    android:textColor="?android:attr/textColorPrimary" />
-
-            </LinearLayout>
-
-            <TextView
-                android:id="@+id/premium_price_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginBottom="16dp"
-                android:textSize="24sp"
-                android:textStyle="bold"
-                android:textColor="?attr/colorPrimary"
-                tools:text="$4.99" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/purchase_button"
-                android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:text="@string/upgrade_to_premium"
-                android:textSize="16sp"
-                app:cornerRadius="8dp" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/restore_purchases_button"
-                android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:layout_marginTop="8dp"
-                android:text="@string/restore_purchases"
-                android:textSize="16sp"
-                app:cornerRadius="8dp"
-                style="@style/Widget.Material3.Button.OutlinedButton" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="16dp"
-                android:gravity="center"
-                android:text="@string/premium_note"
-                android:textSize="12sp"
-                android:textColor="?android:attr/textColorSecondary"
-                android:alpha="0.6" />
 
         </LinearLayout>
-
     </androidx.core.widget.NestedScrollView>
 
     <com.google.android.material.progressindicator.CircularProgressIndicator

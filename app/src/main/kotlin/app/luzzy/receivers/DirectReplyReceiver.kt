@@ -17,6 +17,8 @@ import app.luzzy.messaging.sendMessageCompat
 class DirectReplyReceiver : BroadcastReceiver() {
     @SuppressLint("MissingPermission")
     override fun onReceive(context: Context, intent: Intent) {
+        if (!context.isDefaultSmsApp()) return
+
         val address = intent.getStringExtra(THREAD_NUMBER)
         val threadId = intent.getLongExtra(THREAD_ID, 0L)
         val simToReply: Int = intent.getIntExtra(SIM_TO_REPLY, -1)

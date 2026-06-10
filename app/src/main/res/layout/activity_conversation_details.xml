@@ -475,9 +475,10 @@
                     android:paddingStart="@dimen/contact_padding_left"
                     android:paddingEnd="@dimen/normal_margin">
 
-                    <com.goodwy.commons.views.MyTextView
-                        android:id="@+id/draft_mode_text"
-                        android:layout_width="match_parent"
+                    <!-- Texto + círculo de info en fila -->
+                    <LinearLayout
+                        android:id="@+id/draft_mode_label_row"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
                         android:layout_centerVertical="true"
@@ -485,20 +486,44 @@
                         android:layout_marginEnd="@dimen/bigger_margin"
                         android:layout_marginTop="10dp"
                         android:layout_marginBottom="12dp"
-                        android:text="@string/draft_mode"
-                        android:textSize="@dimen/bigger_text_size"
-                        android:textAlignment="viewStart" />
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:clickable="false">
 
-                    <com.goodwy.commons.views.MyMaterialSwitch
-                        android:id="@+id/draft_mode_switch"
+                        <com.goodwy.commons.views.MyTextView
+                            android:id="@+id/draft_mode_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/draft_mode"
+                            android:textSize="@dimen/bigger_text_size"
+                            android:textAlignment="viewStart" />
+
+                        <!-- Círculo ⓘ informativo -->
+                        <ImageView
+                            android:id="@+id/draft_mode_info_btn"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_marginStart="8dp"
+                            android:src="@drawable/ic_info_vector"
+                            android:alpha="0.55"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:contentDescription="Información sobre modo borrador" />
+                    </LinearLayout>
+
+                    <com.goodwy.commons.views.MyTextView
+                        android:id="@+id/draft_mode_state_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:scaleX="0.8"
-                        android:scaleY="0.8"
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
-                        android:background="@null"
-                        android:clickable="false" />
+                        android:layout_marginEnd="@dimen/settings_margin"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:clickable="false"
+                        android:focusable="false"
+                        tools:text="Auto" />
                 </RelativeLayout>
             </RelativeLayout>
 

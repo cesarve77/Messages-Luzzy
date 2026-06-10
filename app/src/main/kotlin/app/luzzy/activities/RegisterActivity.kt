@@ -12,10 +12,10 @@ import com.goodwy.commons.extensions.toast
 import com.goodwy.commons.extensions.viewBinding
 import app.luzzy.R
 import app.luzzy.auth.GoogleAuthRepository
-import app.luzzy.databinding.ActivityGoogleLoginBinding
+import app.luzzy.databinding.ActivityRegisterBinding
 import app.luzzy.network.RetrofitClient
 import app.luzzy.network.models.GoogleLoginRequest
-import app.luzzy.network.models.WebLoginRequest
+import app.luzzy.network.models.WebRegisterRequest
 import app.luzzy.utils.SharedPrefsManager
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -25,21 +25,13 @@ import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import kotlinx.coroutines.launch
 
-private fun goToSettings(activity: android.app.Activity, finish: Boolean = true) {
-    val intent = Intent(activity, UserSettingsActivity::class.java).apply {
-        putExtra(UserSettingsActivity.EXTRA_JUST_LOGGED_IN, true)
-    }
-    activity.startActivity(intent)
-    if (finish) activity.finish()
-}
-
-class GoogleLoginActivity : SimpleActivity() {
+class RegisterActivity : SimpleActivity() {
 
     companion object {
-        private const val TAG = "GoogleLoginActivity"
+        private const val TAG = "RegisterActivity"
     }
 
-    private val binding by viewBinding(ActivityGoogleLoginBinding::inflate)
+    private val binding by viewBinding(ActivityRegisterBinding::inflate)
     private lateinit var googleSignInClient: GoogleSignInClient
     private lateinit var googleAuthRepository: GoogleAuthRepository
 
@@ -47,7 +39,7 @@ class GoogleLoginActivity : SimpleActivity() {
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
         val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
-        handleSignInResult(task)
+        handleGoogleSignInResult(task)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,14 +52,14 @@ class GoogleLoginActivity : SimpleActivity() {
             .requestEmail()
             .requestIdToken(getString(R.string.google_client_id))
             .build()
-
         googleSignInClient = GoogleSignIn.getClient(this, gso)
 
-        binding.loginButton.setOnClickListener { attemptEmailLogin() }
-        binding.googleSignInButton.setOnClickListener { signInWithGoogle() }
-        binding.registerButton.setOnClickListener {
-            startActivity(Intent(this, RegisterActivity::class.java))
+        binding.registerButton.setOnClickListener { attemptRegister() }
+        binding.googleSignInButton.setOnClickListener {
+            setLoading(true)
+            signInLauncher.launch(googleSignInClient.signInIntent)
         }
+        binding.loginLinkButton.setOnClickListener { finish() }
     }
 
     override fun onResume() {
@@ -79,7 +71,8 @@ class GoogleLoginActivity : SimpleActivity() {
         binding.orText.setTextColor(textColor)
     }
 
-    private fun attemptEmailLogin() {
+    private fun attemptRegister() {
+        val name = binding.nameInput.text.toString().trim()
         val email = binding.emailInput.text.toString().trim()
         val password = binding.passwordInput.text.toString()
 
@@ -98,7 +91,13 @@ class GoogleLoginActivity : SimpleActivity() {
         setLoading(true)
         lifecycleScope.launch {
             try {
-                val response = RetrofitClient.apiService.webLogin(WebLoginRequest(email, password))
+                val response = RetrofitClient.apiService.webRegister(
+                    WebRegisterRequest(
+                        email = email,
+                        password = password,
+                        displayName = name.ifBlank { null }
+                    )
+                )
                 if (response.isSuccessful && response.body() != null) {
                     val body = response.body()!!
                     googleAuthRepository.saveGoogleAuthData(
@@ -107,30 +106,27 @@ class GoogleLoginActivity : SimpleActivity() {
                         displayName = body.user.displayName,
                         photoUrl = null
                     )
-                    SharedPrefsManager.saveGoogleAuthToken(this@GoogleLoginActivity, body.token)
-                    toast(R.string.login_success)
-                    goToSettings(this@GoogleLoginActivity)
+                    SharedPrefsManager.saveGoogleAuthToken(this@RegisterActivity, body.token)
+                    toast(R.string.register_success)
+                    startActivity(Intent(this@RegisterActivity, UserSettingsActivity::class.java).apply {
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        putExtra(UserSettingsActivity.EXTRA_JUST_LOGGED_IN, true)
+                    })
                 } else {
-                    toast(R.string.error_login_failed)
+                    toast(R.string.error_register_failed)
                     setLoading(false)
                 }
             } catch (e: Exception) {
-                Log.e(TAG, "Error en login", e)
-                toast(R.string.error_login_failed)
+                Log.e(TAG, "Error en registro", e)
+                toast(R.string.error_register_failed)
                 setLoading(false)
             }
         }
     }
 
-    private fun signInWithGoogle() {
-        setLoading(true)
-        signInLauncher.launch(googleSignInClient.signInIntent)
-    }
-
-    private fun handleSignInResult(completedTask: Task<GoogleSignInAccount>) {
+    private fun handleGoogleSignInResult(completedTask: Task<GoogleSignInAccount>) {
         try {
             val account = completedTask.getResult(ApiException::class.java)
-            Log.d(TAG, "Google sign-in exitoso: ${account.email}")
             sendGoogleToServer(account)
         } catch (e: ApiException) {
             Log.e(TAG, "Error Google sign-in: ${e.statusCode}")
@@ -142,7 +138,7 @@ class GoogleLoginActivity : SimpleActivity() {
     private fun sendGoogleToServer(account: GoogleSignInAccount) {
         lifecycleScope.launch {
             try {
-                val fcmToken = SharedPrefsManager.getCurrentToken(this@GoogleLoginActivity)
+                val fcmToken = SharedPrefsManager.getCurrentToken(this@RegisterActivity)
                     ?.takeIf { it.isNotBlank() } ?: "pending_fcm"
 
                 val response = RetrofitClient.apiService.googleLogin(
@@ -162,15 +158,18 @@ class GoogleLoginActivity : SimpleActivity() {
                         displayName = body.user.displayName,
                         photoUrl = body.user.photoUrl
                     )
-                    SharedPrefsManager.saveGoogleAuthToken(this@GoogleLoginActivity, body.token)
+                    SharedPrefsManager.saveGoogleAuthToken(this@RegisterActivity, body.token)
                     toast(R.string.google_login_success)
-                    goToSettings(this@GoogleLoginActivity)
+                    startActivity(Intent(this@RegisterActivity, UserSettingsActivity::class.java).apply {
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        putExtra(UserSettingsActivity.EXTRA_JUST_LOGGED_IN, true)
+                    })
                 } else {
                     toast(R.string.google_login_server_error)
                     setLoading(false)
                 }
             } catch (e: Exception) {
-                Log.e(TAG, "Error enviando Google login al servidor", e)
+                Log.e(TAG, "Error enviando Google al servidor", e)
                 toast(R.string.google_login_server_error)
                 setLoading(false)
             }
@@ -178,9 +177,9 @@ class GoogleLoginActivity : SimpleActivity() {
     }
 
     private fun setLoading(loading: Boolean) {
-        binding.loginButton.isEnabled = !loading
-        binding.googleSignInButton.isEnabled = !loading
         binding.registerButton.isEnabled = !loading
+        binding.googleSignInButton.isEnabled = !loading
+        binding.loginLinkButton.isEnabled = !loading
         binding.progressIndicator.visibility = if (loading) View.VISIBLE else View.GONE
     }
 }

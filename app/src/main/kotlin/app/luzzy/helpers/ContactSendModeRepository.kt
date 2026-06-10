@@ -5,6 +5,7 @@ import com.goodwy.commons.helpers.ensureBackgroundThread
 import app.luzzy.databases.MessagesDatabase
 import app.luzzy.models.ContactSendMode
 import app.luzzy.models.SendMode
+import app.luzzy.utils.SharedPrefsManager
 import java.util.concurrent.ConcurrentHashMap
 
 class ContactSendModeRepository(private val context: Context) {
@@ -25,7 +26,16 @@ class ContactSendModeRepository(private val context: Context) {
     }
 
     fun getSendMode(threadId: Long): SendMode {
-        return cache[threadId] ?: SendMode.SEND
+        return cache[threadId] ?: SendMode.AUTO
+    }
+
+    fun getResolvedSendMode(threadId: Long, context: Context): SendMode {
+        val mode = getSendMode(threadId)
+        return if (mode == SendMode.AUTO) {
+            if (SharedPrefsManager.isGlobalDraftModeEnabled(context)) SendMode.DRAFT else SendMode.SEND
+        } else {
+            mode
+        }
     }
 
     fun setSendMode(threadId: Long, sendMode: SendMode) {

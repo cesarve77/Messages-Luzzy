@@ -1,6 +1,13 @@
 <resources>
 
-    <style name="AppTheme" parent="AppTheme.Base" />
+    <!-- Elimina el fondo gris de CUALQUIER EditText en la app -->
+    <style name="TransparentEditText" parent="Widget.AppCompat.EditText">
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+
+    <style name="AppTheme" parent="AppTheme.Base">
+        <item name="android:editTextStyle">@style/TransparentEditText</item>
+    </style>
 
     <style name="roundedImageView" parent="">
         <item name="cornerFamily">rounded</item>

@@ -20,9 +20,11 @@ import android.provider.Telephony.MmsSms
 import android.provider.Telephony.Sms
 import android.provider.Telephony.Threads
 import android.provider.Telephony.ThreadsColumns
+import android.app.role.RoleManager
 import android.telephony.SubscriptionManager
 import android.text.TextUtils
 import android.util.Log
+import android.provider.Telephony
 import androidx.core.net.toUri
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -1570,4 +1572,13 @@ fun Context.getTextSizeMessage() = when (config.fontSizeMessage) {
     FONT_SIZE_MEDIUM -> resources.getDimension(com.goodwy.commons.R.dimen.bigger_text_size)
     FONT_SIZE_LARGE -> resources.getDimension(com.goodwy.commons.R.dimen.big_text_size)
     else -> resources.getDimension(com.goodwy.commons.R.dimen.extra_big_text_size)
+}
+
+fun Context.isDefaultSmsApp(): Boolean {
+    return if (isQPlus()) {
+        val roleManager = getSystemService(RoleManager::class.java)
+        roleManager?.isRoleHeld(RoleManager.ROLE_SMS) == true
+    } else {
+        Telephony.Sms.getDefaultSmsPackage(this) == packageName
+    }
 }
