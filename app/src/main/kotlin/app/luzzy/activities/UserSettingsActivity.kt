@@ -48,7 +48,10 @@ class UserSettingsActivity : SimpleActivity() {
         googleAuthRepository = GoogleAuthRepository(this)
         justLoggedIn = intent.getBooleanExtra(EXTRA_JUST_LOGGED_IN, false)
 
-        if (!googleAuthRepository.isLoggedIn()) {
+        val fallbackToken = SharedPrefsManager.getGoogleAuthToken(this)
+        val isLoggedIn = googleAuthRepository.isLoggedIn() || !fallbackToken.isNullOrBlank()
+
+        if (!isLoggedIn) {
             if (!app.luzzy.BuildConfig.DEBUG) {
                 startActivity(Intent(this, GoogleLoginActivity::class.java))
                 finish()
@@ -213,6 +216,9 @@ class UserSettingsActivity : SimpleActivity() {
         lifecycleScope.launch {
             try {
                 val authHeader = googleAuthRepository.getAuthHeader()
+                    ?: SharedPrefsManager.getGoogleAuthToken(this@UserSettingsActivity)
+                        ?.takeIf { it.isNotBlank() }
+                        ?.let { "Bearer $it" }
                 if (authHeader == null) {
                     android.util.Log.w("UserSettings", "loadConfiguration: no authHeader available, skipping")
                     return@launch
