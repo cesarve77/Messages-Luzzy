@@ -512,16 +512,18 @@
                             android:contentDescription="Información sobre modo borrador" />
                     </LinearLayout>
 
-                    <com.goodwy.commons.views.MyMaterialSwitch
-                        android:id="@+id/draft_mode_switch"
+                    <com.goodwy.commons.views.MyTextView
+                        android:id="@+id/draft_mode_state_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:scaleX="0.8"
-                        android:scaleY="0.8"
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
-                        android:background="@null"
-                        android:clickable="false" />
+                        android:layout_marginEnd="@dimen/settings_margin"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:clickable="false"
+                        android:focusable="false"
+                        tools:text="Auto" />
                 </RelativeLayout>
             </RelativeLayout>
 

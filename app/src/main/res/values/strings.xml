@@ -322,8 +322,13 @@
     <!-- Auto Response Mode -->
     <string name="auto_response">Auto Response</string>
     <string name="draft_mode">Draft mode</string>
-    <string name="draft_mode_description">When this mode is on, the AI generates a reply but does NOT send it automatically.\n\nInstead, you\'ll get a notification on your phone. Tapping it opens WhatsApp with the reply already typed in the text field — you just review it and tap Send.\n\nIdeal for contacts who prefer your personal touch.</string>
+    <string name="draft_mode_description">When this mode is on, the AI generates a reply but does NOT send it automatically.\n\nInstead, you\'ll get a notification on your phone. Tapping it opens the conversation with the reply already typed in the text field — you just review it and tap Send.\n\nIdeal for contacts who prefer your personal touch.</string>
     <string name="send_mode_description">Auto responses will be sent directly without confirmation</string>
+    <string name="global_draft_mode">Global draft mode</string>
+    <string name="global_draft_mode_description">When active, draft mode applies to ALL contacts. You can still override it per conversation.</string>
+    <string name="mode_auto">Auto</string>
+    <string name="mode_send">Send</string>
+    <string name="mode_draft">Draft</string>
 
     <!-- Prominent Disclosure (Google Play User Data policy) -->
     <string name="prominent_disclosure_title">Privacy notice</string>

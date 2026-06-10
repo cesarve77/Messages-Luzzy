@@ -208,18 +208,32 @@ class ConversationDetailsActivity : SimpleActivity() {
         autoResponseIcon.setColorFilter(textColor)
 
         val sendModeRepository = ContactSendModeRepository(this@ConversationDetailsActivity)
-        val currentMode = sendModeRepository.getSendMode(threadId)
 
-        draftModeSwitch.isChecked = (currentMode == SendMode.DRAFT)
+        fun updateStateText(mode: SendMode) {
+            val (label, color) = when (mode) {
+                SendMode.AUTO  -> Pair(getString(app.luzzy.R.string.mode_auto), (textColor and 0x00FFFFFF) or 0x80000000.toInt())
+                SendMode.SEND  -> Pair(getString(app.luzzy.R.string.mode_send), getProperPrimaryColor())
+                SendMode.DRAFT -> Pair(getString(app.luzzy.R.string.mode_draft), 0xFFFF8C00.toInt())
+            }
+            draftModeStateText.text = label
+            draftModeStateText.setTextColor(color)
+        }
+
+        updateStateText(sendModeRepository.getSendMode(threadId))
 
         draftModeWrapper.setOnClickListener {
-            draftModeSwitch.toggle()
-            val newMode = if (draftModeSwitch.isChecked) {
-                SendMode.DRAFT
-            } else {
-                SendMode.SEND
+            val current = sendModeRepository.getSendMode(threadId)
+            val newMode = when (current) {
+                SendMode.AUTO  -> SendMode.SEND
+                SendMode.SEND  -> SendMode.DRAFT
+                SendMode.DRAFT -> SendMode.AUTO
             }
-            sendModeRepository.setSendMode(threadId, newMode)
+            if (newMode == SendMode.AUTO) {
+                sendModeRepository.resetToSend(threadId)
+            } else {
+                sendModeRepository.setSendMode(threadId, newMode)
+            }
+            updateStateText(newMode)
         }
 
         draftModeInfoBtn.setOnClickListener {

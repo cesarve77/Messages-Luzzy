@@ -104,6 +104,18 @@
                             app:switchPadding="@dimen/bigger_margin" />
                     </RelativeLayout>
 
+                    <!-- Modo borrador global -->
+                    <RelativeLayout
+                        android:id="@+id/modo_borrador_global_holder"
+                        style="@style/SettingsHolderSwitchStyle">
+
+                        <com.goodwy.commons.views.MyMaterialSwitch
+                            android:id="@+id/modo_borrador_global_switch"
+                            style="@style/SettingsSwitchStyle"
+                            android:text="@string/global_draft_mode"
+                            app:switchPadding="@dimen/bigger_margin" />
+                    </RelativeLayout>
+
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 

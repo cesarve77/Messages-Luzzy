@@ -13,5 +13,6 @@ data class ContactSendMode(
 
 enum class SendMode {
     SEND,
-    DRAFT
+    DRAFT,
+    AUTO
 }

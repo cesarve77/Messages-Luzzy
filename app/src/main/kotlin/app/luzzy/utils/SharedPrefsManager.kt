@@ -112,4 +112,12 @@ object SharedPrefsManager {
     fun isAccountActive(context: Context): Boolean {
         return getPrefs(context).getBoolean("luzzy_account_active", false)
     }
+
+    fun isGlobalDraftModeEnabled(context: Context): Boolean {
+        return getPrefs(context).getBoolean("global_draft_mode", false)
+    }
+
+    fun setGlobalDraftModeEnabled(context: Context, enabled: Boolean) {
+        getPrefs(context).edit().putBoolean("global_draft_mode", enabled).apply()
+    }
 }

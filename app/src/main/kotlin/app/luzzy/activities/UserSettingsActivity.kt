@@ -117,6 +117,11 @@ class UserSettingsActivity : SimpleActivity() {
         binding.notificacionesSilenciosasHolder.setOnClickListener {
             binding.notificacionesSilenciosasSwitch.toggle()
         }
+        binding.modoBorradorGlobalSwitch.isChecked = SharedPrefsManager.isGlobalDraftModeEnabled(this)
+        binding.modoBorradorGlobalHolder.setOnClickListener {
+            binding.modoBorradorGlobalSwitch.toggle()
+            SharedPrefsManager.setGlobalDraftModeEnabled(this, binding.modoBorradorGlobalSwitch.isChecked)
+        }
         binding.autoRespuestaHolder.setOnClickListener {
             if (isPremium) binding.autoRespuestaSwitch.toggle()
         }
@@ -322,6 +327,8 @@ class UserSettingsActivity : SimpleActivity() {
 
         binding.notificacionesSilenciosasHolder.isEnabled = enabled
         binding.notificacionesSilenciosasSwitch.isEnabled = enabled
+        binding.modoBorradorGlobalHolder.isEnabled = enabled
+        binding.modoBorradorGlobalSwitch.isEnabled = enabled
         binding.autoRespuestaHolder.isEnabled = enabled
         binding.autoRespuestaSwitch.isEnabled = enabled
         binding.usarEmojisHolder.isEnabled = enabled

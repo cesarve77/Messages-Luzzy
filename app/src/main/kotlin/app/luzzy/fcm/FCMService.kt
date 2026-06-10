@@ -128,8 +128,8 @@ class FCMService : FirebaseMessagingService() {
             return
         }
 
-        val sendMode = sendModeRepository.getSendMode(threadId)
-        Log.d(TAG, "📋 ThreadID: $threadId | Modo configurado: $sendMode")
+        val sendMode = sendModeRepository.getResolvedSendMode(threadId, applicationContext)
+        Log.d(TAG, "📋 ThreadID: $threadId | Modo resuelto: $sendMode")
 
         when (sendMode) {
             SendMode.SEND -> {
